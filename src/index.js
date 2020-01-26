@@ -5,13 +5,13 @@ const scale = 30;
 board.height = 20 * scale;
 board.width = 10 * scale;
 
-for(let i = scale; i < board.width; i += scale) {
+/*for(let i = scale; i < board.width; i += scale) {
     boardCtx.strokeStyle = 'red';
     boardCtx.beginPath();
     boardCtx.moveTo(i, 0);
     boardCtx.lineTo(i, board.height);
     boardCtx.stroke();
-} 
+}*/
 
 function createPiece(updateMatrix) {
     let pivot;
@@ -61,4 +61,6 @@ const I = createIPiece(1.5, -0.5);
 I.draw();
 I.setPivot(2.5, 2.5);
 I.draw();
-console.log(I);
+
+const T = createTPiece(5, 8);
+T.draw();
