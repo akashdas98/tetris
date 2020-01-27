@@ -1,3 +1,5 @@
+import { join } from "path";
+
 const board = document.querySelector('canvas');
 const boardCtx = board.getContext('2d');
 const scale = 30;
@@ -27,7 +29,7 @@ function createPiece(updateMatrix) {
         });
     }
     return {draw, setPivot};
-};
+}
 
 function createTPiece(x, y) {
     function updateMatrix(pivot) {
@@ -57,10 +59,72 @@ function createIPiece(x, y) {
     return IPiece;
 }
 
-const I = createIPiece(1.5, -0.5);
-I.draw();
-I.setPivot(2.5, 2.5);
-I.draw();
+function createJPiece(x, y) {
+    function updateMatrix(pivot) {
+        return [
+            {x: pivot.x - 1, y: pivot.y},
+            {x: pivot.x, y: pivot.y},
+            {x: pivot.x + 1, y: pivot.y},
+            {x: pivot.x - 1, y: pivot.y - 1},
+        ];
+    }
+    const JPiece = createPiece(updateMatrix);
+    JPiece.setPivot(x, y);
+    return JPiece;
+}
 
-const T = createTPiece(5, 8);
-T.draw();
+function createLPiece(x, y) {
+    function updateMatrix(pivot) {
+        return [
+            {x: pivot.x - 1, y: pivot.y},
+            {x: pivot.x, y: pivot.y},
+            {x: pivot.x + 1, y: pivot.y},
+            {x: pivot.x + 1, y: pivot.y - 1},
+        ];
+    }
+    const LPiece = createPiece(updateMatrix);
+    LPiece.setPivot(x, y);
+    return LPiece;
+}
+
+function createSPiece(x, y) {
+    function updateMatrix(pivot) {
+        return [
+            {x: pivot.x - 1, y: pivot.y},
+            {x: pivot.x, y: pivot.y},
+            {x: pivot.x, y: pivot.y - 1},
+            {x: pivot.x + 1, y: pivot.y - 1},
+        ];
+    }
+    const SPiece = createPiece(updateMatrix);
+    SPiece.setPivot(x, y);
+    return SPiece;
+}
+
+function createOPiece(x, y) {
+    function updateMatrix(pivot) {
+        return [
+            {x: pivot.x - 1, y: pivot.y},
+            {x: pivot.x, y: pivot.y},
+            {x: pivot.x - 1, y: pivot.y - 1},
+            {x: pivot.x, y: pivot.y - 1},
+        ];
+    }
+    const OPiece = createPiece(updateMatrix);
+    OPiece.setPivot(x, y);
+    return OPiece;
+}
+
+function createZPiece(x, y) {
+    function updateMatrix(pivot) {
+        return [
+            {x: pivot.x - 1, y: pivot.y - 1},
+            {x: pivot.x, y: pivot.y},
+            {x: pivot.x, y: pivot.y - 1},
+            {x: pivot.x + 1, y: pivot.y},
+        ];
+    }
+    const ZPiece = createPiece(updateMatrix);
+    ZPiece.setPivot(x, y);
+    return ZPiece;
+}
