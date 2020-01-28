@@ -21,17 +21,8 @@ function matrixMultiply(a, b) {
     return c;
 }
 
-let history = 99;
-function randomizer() {
-    let random = Math.floor(Math.random() * 7);
-    if(random === history) {
-        random = Math.floor(Math.random() * 7);
-    }
-    history = random;
-    return random;
-}
-
 function createPiece(matrix, pivot, id, color) {
+    let orientation = 0;
     function setPivot(x, y) {
         pivot = [x, y];
     }
@@ -43,6 +34,9 @@ function createPiece(matrix, pivot, id, color) {
     }
     function getColor() {
         return color;
+    }
+    function getOrientation() {
+        return orientation;
     }
     function draw() {
         boardCtx.fillStyle = color;
@@ -56,13 +50,20 @@ function createPiece(matrix, pivot, id, color) {
     }
     function rotate(dir) {
         if(id == 'O') return;
-        let rotation = dir == 0? [
-            [0, 1],
-            [-1, 0]
-        ] : [
-            [0, -1],
-            [1, 0]
-        ];
+        let rotation;
+        if(dir == 0) {
+            rotation = [
+                [0, 1],
+                [-1, 0]
+            ];
+            orientation = orientation == 0? 3 : orientation - 1;
+        } else {
+            rotation = [
+                [0, -1],
+                [1, 0]
+            ];
+            orientation = (orientation + 1) % 4;
+        }
         matrix = matrix.map(tile => {
             return matrixMultiply(rotation, tile);
         });
@@ -168,39 +169,82 @@ function createZPiece(x, y) {
     return ZPiece;
 }
 
-function spawn() {
-    const random = randomizer();
-    let piece;
-    switch(random) {
-        case 0:
-            piece = createTPiece(5, 1);
-            piece.draw();
-            break;
-        case 1:
-            piece = createIPiece(4.5, -0.5);
-            piece.draw();
-            break;
-        case 2:
-            piece = createJPiece(5, 1);
-            piece.draw();
-            break;
-        case 3:
-            piece = createLPiece(5, 1);
-            piece.draw();
-            break;
-        case 4:
-            piece = createSPiece(5, 1);
-            piece.draw();
-            break;
-        case 5:
-            piece = createOPiece(5, 1);
-            piece.draw();
-            break;
-        case 6:
-            piece = createZPiece(5, 1);
-            piece.draw();
-            break;    
+function createNewGame() {
+    let history = 99;
+    let currentPiece;
+    let nextPiece = generateRandomPiece();
+    
+    function randomizer() {
+        let random = Math.floor(Math.random() * 7);
+        if(random === history) {
+            random = Math.floor(Math.random() * 7);
+        }
+        history = random;
+        return random;
     }
+    
+    function generateRandomPiece() {
+        const random = randomizer();
+        let piece;
+        switch(random) {
+            case 0:
+                piece = createTPiece(5, 1);
+                //piece.draw();
+                break;
+            case 1:
+                piece = createIPiece(4.5, -0.5);
+                //piece.draw();
+                break;
+            case 2:
+                piece = createJPiece(5, 1);
+                //piece.draw();
+                break;
+            case 3:
+                piece = createLPiece(5, 1);
+                //piece.draw();
+                break;
+            case 4:
+                piece = createSPiece(5, 1);
+                //piece.draw();
+                break;
+            case 5:
+                piece = createOPiece(5, 1);
+                //piece.draw();
+                break;
+            case 6:
+                piece = createZPiece(5, 1);
+                //piece.draw();
+                break;    
+        }
+        return piece;
+    }
+
+    function spawn() {
+        currentPiece = nextPiece;
+        nextPiece = generateRandomPiece();
+        currentPiece.draw();
+    }
+
+    function drop() {
+        let interval = setInterval(() => {
+            currentPiece.getMatrix().forEach(tile => {
+                console.log(tile[1] + currentPiece.getPivot()[1]);
+                if(tile[1] + currentPiece.getPivot()[1] >= 18) {
+                    clearInterval(interval);
+                }
+            });
+            boardCtx.clearRect(0, 0, board.width, board.height);
+            currentPiece.setPivot(currentPiece.getPivot()[0], currentPiece.getPivot()[1] + 1)
+            currentPiece.draw();
+        }, 800);
+    }
+
+    return {
+        spawn,
+        drop,
+    };
 }
 
-spawn();
+let game = createNewGame();
+game.spawn();
+game.drop();
