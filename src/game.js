@@ -104,14 +104,17 @@ function createNewGame() {
             if(flag === 1) {
                 stopped = !stopped;
                 clearInterval(interval);
-                drop(normalDrop); 
+                drop(normalDrop);
+                count = 0; 
             }
             clearTimeout(timeout);
             timeout = setTimeout(() => {
-                addToStack();
-                clear();
-                start();
-                count = 0;
+                if(stopped) {
+                    addToStack();
+                    clear();
+                    start();
+                    count = 0;
+                }
             }, 1000);
             count++;
         }
@@ -138,9 +141,11 @@ function createNewGame() {
         stopped = true;
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            addToStack();
-            clear();
-            start();
+            if(stopped) {
+                addToStack();
+                clear();
+                start();
+            }
         }, 1000);
     }
 
@@ -256,8 +261,7 @@ function createNewGame() {
                 }
                 for(let y1 = y-1; y1 >= 0; y1--) {
                     for(let x = 0; x < 10; x++) {
-                        boardMatrix[x][y1+1].value = boardMatrix[x][y1].value;
-                        boardMatrix[x][y1+1].color = boardMatrix[x][y1].color;
+                        boardMatrix[x][y1+1] = boardMatrix[x][y1];
                     }
                 }
             }
