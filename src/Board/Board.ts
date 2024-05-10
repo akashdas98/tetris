@@ -57,23 +57,34 @@ export default class Board {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
   public clearLine = (): void => {
-    for (let y = 0; y < 20; y++) {
+    const height = 20;
+    const width = 10;
+    let linesToClear = [];
+
+    // First, identify all the full lines
+    for (let y = height - 1; y >= 0; y--) {
       if (this.matrix[y].every((cell) => cell.value === 1)) {
-        for (let x = 0; x < 10; x++) {
-          this.matrix[y][x] = { value: 0, color: null };
-        }
-        // Shift down all rows above the cleared line
-        for (let shiftY = y; shiftY > 0; shiftY--) {
-          this.matrix[shiftY] = this.matrix[shiftY - 1];
-        }
-        this.matrix[0] = Array.from({ length: 10 }, () => ({
-          value: 0,
-          color: null,
-        }));
-        y--; // Re-check the same line index because it now has a new row after the shift
+        linesToClear.push(y);
       }
     }
-    this.draw();
+
+    // Move each line down starting from the lowest full line
+    for (let i = linesToClear.length - 1; i >= 0; i--) {
+      let line = linesToClear[i];
+      // Move all lines above this one down
+      for (let y = line; y > 0; y--) {
+        this.matrix[y] = this.matrix[y - 1];
+      }
+      // Clear the top row
+      this.matrix[0] = Array.from({ length: width }, () => ({
+        value: 0,
+        color: null,
+      }));
+    }
+
+    if (linesToClear.length > 0) {
+      this.draw();
+    }
   };
 
   public maxHeightReached = (): boolean =>

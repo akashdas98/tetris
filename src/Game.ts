@@ -14,7 +14,6 @@ class Game {
   private currentPiece: Piece;
   private nextPiece: Piece;
   private timeout: NodeJS.Timeout | undefined;
-  private interval: NodeJS.Timeout | undefined;
   private normalDrop: number = 100;
   private softDrop: number = 50;
   private stopped: boolean;
@@ -121,11 +120,16 @@ class Game {
 
   public startGame = () => {
     this.stopped = false;
+    console.log("STARTED");
     this.spawn();
-    this.frameRequestHandle = requestAnimationFrame(this.startDropLoop);
+    this.startDropLoop();
   };
 
-  private startDropLoop = (timestamp: number) => {
+  private startDropLoop = (): void => {
+    this.frameRequestHandle = requestAnimationFrame(this.dropLoop);
+  };
+
+  private dropLoop = (timestamp: number): void => {
     const deltaTime = timestamp - this.lastUpdateTime;
     this.lastUpdateTime = timestamp;
     this.accumulatedTime += deltaTime;
@@ -142,7 +146,7 @@ class Game {
 
     this.redrawGameBoard();
     if (!this.stopped) {
-      this.frameRequestHandle = requestAnimationFrame(this.startDropLoop);
+      this.startDropLoop();
     }
   };
 
@@ -160,17 +164,25 @@ class Game {
 
   private queueStop = () => {
     if (this.timeout) return;
+    console.log("STOPPING");
     this.timeout = setTimeout(this.stop, 1000);
   };
 
   private stop = (): void => {
-    if (this.canDrop()) return;
-    this.clearDropInterval();
+    console.log("STOPPED");
     this.clearStopTimeout();
+    if (this.canDrop()) {
+      console.log("STOP CANCELLED");
+      return;
+    }
+    this.clearDropInterval();
     this.stopped = true;
+    console.log("ADDING TO BOARD");
     this.board.addToStack(this.currentPiece);
+    console.log("CLEARING LINES");
     this.board.clearLine();
     if (this.board.maxHeightReached()) {
+      console.log("GAME OVER");
     } else {
       this.startGame();
     }
