@@ -7,15 +7,17 @@ import SPiece from "./Piece/SPiece";
 import JPiece from "./Piece/JPiece";
 import ZPiece from "./Piece/ZPiece";
 import LPiece from "./Piece/LPiece";
+import Scoring from "./Scoring/Scoring";
+import Level from "./Level/Level";
 
 class Game {
   private board: Board;
+  private scoring: Scoring;
+  private level: Level;
   private history: number = 99;
   private currentPiece: Piece;
   private nextPiece: Piece;
   private timeout: NodeJS.Timeout | undefined;
-  private normalDrop: number = 100;
-  private softDrop: number = 50;
   private stopped: boolean;
   private currentSpeed: number;
   private isSoftDropping: boolean;
@@ -23,14 +25,19 @@ class Game {
   private accumulatedTime: number;
   private frameRequestHandle: number | null;
 
-  constructor() {
+  constructor(startingLevel: number = 0) {
     this.lastUpdateTime = window.performance.now();
     this.board = new Board(
       document.querySelector("canvas") as HTMLCanvasElement
     );
+    this.scoring = new Scoring(document.getElementById("score") as HTMLElement);
+    this.level = new Level(
+      startingLevel,
+      document.getElementById("currentLevel") as HTMLElement
+    );
+    this.currentSpeed = this.level.getCurrentSpeed();
     this.nextPiece = this.generateRandomPiece();
     this.currentPiece = this.generateRandomPiece();
-    this.currentSpeed = this.normalDrop;
     this.isSoftDropping = false;
     this.accumulatedTime = 0;
     this.frameRequestHandle = null;
@@ -91,17 +98,17 @@ class Game {
     return x >= 0 && x <= 9 && y <= 19 && boardMatrix[y]?.[x]?.value !== 1;
   };
 
-  private startSoftDrop() {
+  private startSoftDrop = (): void => {
     if (!this.isSoftDropping) {
-      this.currentSpeed = this.softDrop;
+      this.updateCurrentSpeed(Math.min(100, this.level.getCurrentSpeed() / 2));
       this.isSoftDropping = true;
     }
-  }
+  };
 
-  private stopSoftDrop() {
-    this.currentSpeed = this.normalDrop;
+  private stopSoftDrop = (): void => {
+    this.updateCurrentSpeed(this.level.getCurrentSpeed());
     this.isSoftDropping = false;
-  }
+  };
 
   private canDrop = () => {
     const boardMatrix = this.board.getMatrix();
@@ -116,6 +123,10 @@ class Game {
   private redrawGameBoard = () => {
     this.board.draw();
     this.board.drawPiece(this.currentPiece);
+  };
+
+  private updateCurrentSpeed = (speed: number): void => {
+    this.currentSpeed = speed;
   };
 
   public startGame = () => {
@@ -177,15 +188,22 @@ class Game {
     }
     this.clearDropInterval();
     this.stopped = true;
-    console.log("ADDING TO BOARD");
-    this.board.addToStack(this.currentPiece);
-    console.log("CLEARING LINES");
-    this.board.clearLine();
+    this.handlePostOps();
     if (this.board.maxHeightReached()) {
       console.log("GAME OVER");
     } else {
       this.startGame();
     }
+  };
+
+  private handlePostOps = () => {
+    console.log("ADDING TO BOARD");
+    this.board.addToStack(this.currentPiece);
+    console.log("CLEARING LINES");
+    const clearedLines = this.board.clearLine();
+    this.scoring.addScore(clearedLines, this.level.getCurrentLevel());
+    this.level.updateLevel(this.board.getTotalLinesCleared());
+    this.updateCurrentSpeed(this.level.getCurrentSpeed());
   };
 
   private clearDropInterval = (): void => {

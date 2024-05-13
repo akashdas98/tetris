@@ -7,6 +7,7 @@ export default class Board {
   private ctx: CanvasRenderingContext2D;
   private scale: number;
   private matrix: BoardMatrix;
+  private totalLinesCleared: number;
 
   constructor(canvas: HTMLCanvasElement, scale: number = 30) {
     this.canvas = canvas;
@@ -14,6 +15,7 @@ export default class Board {
     this.scale = scale;
     this.canvas.height = 20 * this.scale;
     this.canvas.width = 10 * this.scale;
+    this.totalLinesCleared = 0;
     this.matrix = Array.from({ length: 20 }, () =>
       Array.from({ length: 10 }, () => ({ value: 0, color: null }))
     );
@@ -56,7 +58,7 @@ export default class Board {
   public clear = (): void =>
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-  public clearLine = (): void => {
+  public clearLine = (): number => {
     const height = 20;
     const width = 10;
     let linesToClear = [];
@@ -84,7 +86,10 @@ export default class Board {
 
     if (linesToClear.length > 0) {
       this.draw();
+      this.totalLinesCleared += linesToClear.length;
     }
+
+    return linesToClear.length;
   };
 
   public maxHeightReached = (): boolean =>
@@ -100,4 +105,6 @@ export default class Board {
       }
     });
   };
+
+  public getTotalLinesCleared = (): number => this.totalLinesCleared;
 }
