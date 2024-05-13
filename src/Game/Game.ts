@@ -25,11 +25,9 @@ class Game {
   private accumulatedTime: number;
   private frameRequestHandle: number | null;
 
-  constructor(startingLevel: number = 0) {
+  constructor(canvas: HTMLCanvasElement, startingLevel: number = 0) {
     this.lastUpdateTime = window.performance.now();
-    this.board = new Board(
-      document.querySelector("canvas") as HTMLCanvasElement
-    );
+    this.board = new Board(canvas);
     this.scoring = new Scoring(document.getElementById("score") as HTMLElement);
     this.level = new Level(
       startingLevel,

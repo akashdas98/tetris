@@ -6,7 +6,6 @@ export default class Scoring {
   constructor(display: HTMLElement) {
     this.display = display;
     this.score = 0;
-    this.updateDisplay();
     this.baseScoreMap = {
       0: 0,
       1: 40,
@@ -14,6 +13,7 @@ export default class Scoring {
       3: 200,
       4: 1200,
     };
+    this.updateDisplay();
   }
 
   private updateDisplay = (): void => {

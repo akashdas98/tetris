@@ -154,7 +154,7 @@ export default abstract class Piece {
 
   private changeOrientation(dir: 1 | 0) {
     this.orientation = (
-      dir == 1
+      dir === 1
         ? (((this.orientation + 1) % 4) + 4) % 4
         : (((this.orientation - 1) % 4) + 4) % 4
     ) as typeof this.orientation;
