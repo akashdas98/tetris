@@ -1,3 +1,4 @@
+import { mutifyHexColor } from "../../utils";
 import Piece from "../Piece/Piece";
 
 export type BoardMatrix = { value: number; color: string | null }[][];
@@ -12,6 +13,7 @@ export default class Board {
   constructor(canvas: HTMLCanvasElement, scale: number = 30) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.ctx.imageSmoothingEnabled = false;
     this.scale = scale;
     this.canvas.height = 20 * this.scale;
     this.canvas.width = 10 * this.scale;
@@ -23,10 +25,9 @@ export default class Board {
 
   private drawTile = (x: number, y: number, color: string): void => {
     this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = "#000000";
-    this.ctx.globalAlpha = 1;
+    this.ctx.strokeStyle = mutifyHexColor(color, 0.7, 0.6);
+    this.ctx.lineWidth = 2;
     this.ctx.fillRect(x * this.scale, y * this.scale, this.scale, this.scale);
-    this.ctx.globalAlpha = 0.5;
     this.ctx.strokeRect(x * this.scale, y * this.scale, this.scale, this.scale);
   };
 

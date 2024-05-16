@@ -1,5 +1,4 @@
 import { BoardMatrix } from "../Board/Board";
-import { matrixMultiply } from "../utils";
 
 export interface PieceInterface {
   matrix: number[][];
@@ -72,19 +71,17 @@ export default abstract class Piece {
 
   public rotate = (dir: 0 | 1, boardMatrix: BoardMatrix): void => {
     if (this.id === "O") return;
-    let rotation = this.getRotationMatrix(dir);
 
-    let rotated = this.matrix.map((tile) => {
-      return matrixMultiply(rotation, tile);
-    });
+    let rotated = this.rotateMatrix(this.matrix, dir);
 
     this.changeOrientation(dir);
 
     let rotationSuccessful: boolean = false;
     for (const [x, y] of this.kickData[this.orientation]) {
       let kick: boolean = this.checkKick(x, y, rotated, boardMatrix);
-      if (!kick) {
+      if (kick) {
         this.doKick(x, y, rotated, dir);
+        this.matrix = rotated;
         rotationSuccessful = true;
         break;
       }
@@ -112,13 +109,22 @@ export default abstract class Piece {
     return rotation;
   }
 
+  private rotateMatrix = (matrix: number[][], dir: 0 | 1) => {
+    const rotationMatrix = this.getRotationMatrix(dir);
+
+    return matrix.map((tile) => [
+      rotationMatrix[0][0] * tile[0] + rotationMatrix[0][1] * tile[1],
+      rotationMatrix[1][0] * tile[0] + rotationMatrix[1][1] * tile[1],
+    ]);
+  };
+
   private checkKick(
     x: number,
     y: number,
     rotated: PieceInterface["matrix"],
     boardMatrix: BoardMatrix
   ): boolean {
-    let kick = false;
+    let kick = true;
     for (let i = 0; i < rotated.length; i++) {
       if (
         rotated[i][0] + this.pivot[0] + x < 0 ||
@@ -126,14 +132,14 @@ export default abstract class Piece {
         rotated[i][1] + this.pivot[1] + y < 0 ||
         rotated[i][1] + this.pivot[1] + y > 19
       ) {
-        kick = true;
+        kick = false;
         break;
       } else if (
         boardMatrix[rotated[i][1] + this.pivot[1] + y]?.[
           rotated[i][0] + this.pivot[0] + x
         ]?.value === 1
       ) {
-        kick = true;
+        kick = false;
         break;
       }
     }
@@ -146,7 +152,6 @@ export default abstract class Piece {
     rotated: PieceInterface["matrix"],
     dir: 1 | 0
   ) {
-    this.matrix = rotated;
     this.pivot[0] += x;
     this.pivot[1] += y;
     this.changeOrientation(dir);
