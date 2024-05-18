@@ -24,8 +24,8 @@ export default class Board {
   }
 
   private drawTile = (x: number, y: number, color: string): void => {
-    const strokeWidth = 6;
-    const innerScale = this.scale - strokeWidth - 4;
+    const strokeWidth = this.scale / 6;
+    const innerScale = this.scale - strokeWidth - 0.65 * strokeWidth;
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = mutifyHexColor(color, 0.8, 0.8);
     this.ctx.lineWidth = strokeWidth;

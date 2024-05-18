@@ -1,5 +1,12 @@
-.backgroundContainer {
+.background {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  border: 15px solid #cd712e;
+}
+
+.canvasContainer {
   overflow: hidden;
 }

@@ -9,3 +9,18 @@ export function shuffle(array: any[]): any[] {
 
   return shuffled;
 }
+
+export function areValuesClosePercentage(
+  value1: number,
+  value2: number,
+  percentageTolerance: number = 1
+) {
+  if (value1 === 0 && value2 === 0) return true;
+  if (value1 === 0 || value2 === 0) return false;
+
+  const difference = Math.abs(value1 - value2);
+  const average = (Math.abs(value1) + Math.abs(value2)) / 2;
+  const percentageDifference = (difference / average) * 100;
+
+  return percentageDifference <= percentageTolerance;
+}

@@ -1,12 +1,31 @@
 import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
-import { mutifyHexColor, shuffle } from "../utils";
+import { areValuesClosePercentage, mutifyHexColor, shuffle } from "../utils";
 
 export default function BackgroundCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isClient, setIsClient] = useState(false);
 
-  const getCanvasScale = () =>
-    Math.min(window.innerHeight / 35, window.innerWidth / 1.5);
+  const getCanvasScale = () => {
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+    const minDim = Math.min(width, height);
+    let scaleFactor = width >= 1200 ? 0.7 : 0.8;
+
+    if (areValuesClosePercentage(width, height, 25)) {
+      return (scaleFactor * minDim) / 20;
+    }
+
+    if (width > height) {
+      return (scaleFactor * height) / 20;
+    }
+
+    scaleFactor =
+      height > 2 * width ? scaleFactor : width >= 1200 ? 0.65 : 0.75;
+
+    return height > 2 * width
+      ? (scaleFactor * width) / 10
+      : (scaleFactor * height) / 20;
+  };
 
   const createEmptyGrid = (rows: number, cols: number): (string | null)[][] => {
     let grid: (string | null)[][] = [];
@@ -132,13 +151,13 @@ export default function BackgroundCanvas() {
     canvas!.width = canvas!.clientWidth;
     canvas!.height = canvas!.clientHeight;
 
-    const strokeWidth = 6;
-    const innerScale = scale - strokeWidth - 4;
+    const strokeWidth = scale / 6;
+    const innerScale = scale - strokeWidth - 0.65 * strokeWidth;
 
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[row].length; col++) {
         if (grid[row][col]) {
-          context.strokeStyle = mutifyHexColor(grid[row][col]!, 0.4, 0.4);
+          context.strokeStyle = mutifyHexColor(grid[row][col]!, 0.4, 0.3);
           context.lineWidth = strokeWidth;
           context.strokeRect(
             col * scale + strokeWidth / 2,
