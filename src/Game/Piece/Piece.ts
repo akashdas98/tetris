@@ -2,20 +2,20 @@ import { BoardMatrix } from "../Board/Board";
 
 export interface PieceInterface {
   matrix: number[][];
-  pivot: number[];
+  pivot?: [number, number];
   id: "O" | "I" | "S" | "Z" | "J" | "L" | "T";
   color: string;
 }
 
 export default abstract class Piece {
   protected matrix: PieceInterface["matrix"];
-  protected pivot: PieceInterface["pivot"];
+  protected pivot: [number, number];
   protected id: PieceInterface["id"];
   protected color: PieceInterface["color"];
   protected orientation: 0 | 1 | 2 | 3;
   protected kickData: [number, number][][];
 
-  constructor({ matrix, pivot, id, color }: PieceInterface) {
+  constructor({ matrix, pivot = [5, 0], id, color }: PieceInterface) {
     this.matrix = matrix;
     this.pivot = pivot;
     this.id = id;
@@ -57,7 +57,7 @@ export default abstract class Piece {
     this.pivot = [x, y];
   };
 
-  public getPivot = (): PieceInterface["pivot"] => {
+  public getPivot = (): [number, number] => {
     return this.pivot;
   };
 

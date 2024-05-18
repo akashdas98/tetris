@@ -9,33 +9,39 @@ import ZPiece from "./Piece/ZPiece";
 import LPiece from "./Piece/LPiece";
 import Scoring from "./Scoring/Scoring";
 import Level from "./Level/Level";
+import { shuffle } from "../utils";
 
 class Game {
   private board: Board;
   private scoring: Scoring;
   private level: Level;
-  private history: number = 99;
   private currentPiece: Piece;
   private nextPiece: Piece;
-  private timeout: NodeJS.Timeout | undefined;
+  private stopTimeout: NodeJS.Timeout | undefined;
   private stopped: boolean;
   private currentSpeed: number;
   private isSoftDropping: boolean;
   private lastUpdateTime: number;
   private accumulatedTime: number;
   private frameRequestHandle: number | null;
+  private bag: Piece[];
 
-  constructor(canvas: HTMLCanvasElement, startingLevel: number = 0) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    startingLevel: number = 0,
+    scale: number = 30
+  ) {
     this.lastUpdateTime = window.performance.now();
-    this.board = new Board(canvas);
+    this.board = new Board(canvas, scale);
     this.scoring = new Scoring(document.getElementById("score") as HTMLElement);
     this.level = new Level(
       startingLevel,
       document.getElementById("currentLevel") as HTMLElement
     );
     this.currentSpeed = this.level.getCurrentSpeed();
+    this.bag = [];
     this.nextPiece = this.generateRandomPiece();
-    this.currentPiece = this.generateRandomPiece();
+    this.currentPiece = this.nextPiece;
     this.isSoftDropping = false;
     this.accumulatedTime = 0;
     this.frameRequestHandle = null;
@@ -43,6 +49,17 @@ class Game {
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
   }
+
+  public startGame = () => {
+    this.stopped = false;
+    console.log("STARTED");
+    this.spawn();
+    this.startDropLoop();
+  };
+
+  public resizeGameBoard = (scale: number = 30) => {
+    this.board.setScale(scale);
+  };
 
   private handleKeyDown = (e: KeyboardEvent) => {
     const boardMatrix = this.board.getMatrix();
@@ -127,13 +144,6 @@ class Game {
     this.currentSpeed = speed;
   };
 
-  public startGame = () => {
-    this.stopped = false;
-    console.log("STARTED");
-    this.spawn();
-    this.startDropLoop();
-  };
-
   private startDropLoop = (): void => {
     this.frameRequestHandle = requestAnimationFrame(this.dropLoop);
   };
@@ -147,7 +157,7 @@ class Game {
     while (this.accumulatedTime > this.currentSpeed) {
       if (this.canDrop()) {
         this.drop();
-      } else if (!this.timeout) {
+      } else if (!this.stopTimeout) {
         this.queueStop();
       }
       this.accumulatedTime -= this.currentSpeed;
@@ -172,9 +182,9 @@ class Game {
   };
 
   private queueStop = () => {
-    if (this.timeout) return;
+    if (this.stopTimeout) return;
     console.log("STOPPING");
-    this.timeout = setTimeout(this.stop, 1000);
+    this.stopTimeout = setTimeout(this.stop, 1000);
   };
 
   private stop = (): void => {
@@ -212,46 +222,29 @@ class Game {
   };
 
   private clearStopTimeout = (): void => {
-    if (this.timeout) clearTimeout(this.timeout);
-    this.timeout = undefined;
+    if (this.stopTimeout) clearTimeout(this.stopTimeout);
+    this.stopTimeout = undefined;
   };
 
-  private randomizer = (): number => {
-    let random = Math.floor(Math.random() * 7);
-    while (random === this.history) {
-      random = Math.floor(Math.random() * 7);
-    }
-    this.history = random;
-    return random;
+  private generateBag = (): Piece[] => {
+    const bag: Piece[] = [
+      new IPiece(),
+      new OPiece(),
+      new TPiece(),
+      new SPiece(),
+      new ZPiece(),
+      new JPiece(),
+      new LPiece(),
+    ];
+    return shuffle(bag);
   };
 
   private generateRandomPiece = (): Piece => {
-    const random = this.randomizer();
-    let piece: Piece;
-    switch (random) {
-      case 0:
-        piece = new TPiece(5, 0);
-        break;
-      case 1:
-        piece = new IPiece(4.5, -0.5);
-        break;
-      case 2:
-        piece = new JPiece(5, 0);
-        break;
-      case 3:
-        piece = new LPiece(5, 0);
-        break;
-      case 4:
-        piece = new SPiece(5, 0);
-        break;
-      case 5:
-        piece = new OPiece(5, 0);
-        break;
-      default:
-        piece = new ZPiece(5, 0);
-        break;
+    if (this.bag.length === 0) {
+      this.bag = this.generateBag();
     }
-    return piece;
+    const nextPiece = this.bag.pop() as Piece;
+    return nextPiece;
   };
 }
 

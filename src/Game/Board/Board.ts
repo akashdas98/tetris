@@ -24,11 +24,23 @@ export default class Board {
   }
 
   private drawTile = (x: number, y: number, color: string): void => {
+    const strokeWidth = 6;
+    const innerScale = this.scale - strokeWidth - 4;
     this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = mutifyHexColor(color, 0.7, 0.6);
-    this.ctx.lineWidth = 2;
-    this.ctx.fillRect(x * this.scale, y * this.scale, this.scale, this.scale);
-    this.ctx.strokeRect(x * this.scale, y * this.scale, this.scale, this.scale);
+    this.ctx.strokeStyle = mutifyHexColor(color, 0.8, 0.8);
+    this.ctx.lineWidth = strokeWidth;
+    this.ctx.fillRect(
+      x * this.scale + strokeWidth / 2,
+      y * this.scale + strokeWidth / 2,
+      innerScale,
+      innerScale
+    );
+    this.ctx.strokeRect(
+      x * this.scale + strokeWidth / 2,
+      y * this.scale + strokeWidth / 2,
+      innerScale,
+      innerScale
+    );
   };
 
   public drawPiece = (piece: Piece): void => {
@@ -108,4 +120,11 @@ export default class Board {
   };
 
   public getTotalLinesCleared = (): number => this.totalLinesCleared;
+
+  public setScale = (scale: number = 30) => {
+    this.scale = scale;
+    this.canvas.height = 20 * this.scale;
+    this.canvas.width = 10 * this.scale;
+    this.draw();
+  };
 }

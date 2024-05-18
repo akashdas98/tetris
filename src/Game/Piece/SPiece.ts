@@ -1,7 +1,7 @@
-import Piece from "./Piece";
+import Piece, { PieceInterface } from "./Piece";
 
 export default class TPiece extends Piece {
-  constructor(x: number, y: number) {
+  constructor(pivot?: PieceInterface["pivot"]) {
     const id = "S";
     const color = "#00ff00";
     let matrix = [
@@ -13,7 +13,7 @@ export default class TPiece extends Piece {
     super({
       id,
       color,
-      pivot: [x, y],
+      pivot,
       matrix,
     });
   }

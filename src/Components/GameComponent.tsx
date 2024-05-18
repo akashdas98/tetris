@@ -1,20 +1,37 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import Game from "../Game";
+import React, { useEffect, useRef, useState } from "react";
+import Game from "../Game/Game";
 import styles from "../style/gameComponent.module.css";
 
 export default function GameComponent() {
   const game = useRef<Game | null>(null);
   const boardRef = useRef(null);
 
+  const getGameBoardScale = () => Math.min(window.innerHeight / 35, window.innerWidth / 1.5)
+
+  const handleResize = () => {
+    game.current?.resizeGameBoard(getGameBoardScale());
+  };
+
+  const initializeGame = () => {
+    if(!boardRef.current) return;
+    const newGame = new Game(boardRef.current, 6, getGameBoardScale());
+    newGame.startGame();
+    game.current = newGame;
+  }
+
   useEffect(() => {
-    if (!game.current && boardRef.current) {
-      const newGame = new Game(boardRef.current, 6);
-      newGame.startGame();
-      game.current = newGame;
+    if (!game.current) {
+      initializeGame()
     }
-  });
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div id="gameComponent">

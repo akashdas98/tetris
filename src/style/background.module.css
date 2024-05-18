@@ -1,0 +1,5 @@
+.backgroundContainer {
+  position: absolute;
+  border: 15px solid #cd712e;
+  overflow: hidden;
+}

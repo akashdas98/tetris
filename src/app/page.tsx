@@ -1,13 +1,11 @@
 import styles from "../style/home.module.css";
 import GameComponent from "../Components/GameComponent";
-import BackgroundCanvas from "../Components/BackgroundCanvas";
+import Background from "../Components/Background";
 
 export default function HomePage() {
   return (
-    <div className={styles.App} style={{ background: "#000000" }}>
-      <div className={styles.backgroundContainer}>
-        <BackgroundCanvas />
-      </div>
+    <div className={styles.App}>
+      <Background />
       <div className={styles.gameContainer}>
         <GameComponent />
       </div>

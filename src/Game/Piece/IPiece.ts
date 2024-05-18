@@ -1,7 +1,7 @@
-import Piece from "./Piece";
+import Piece, { PieceInterface } from "./Piece";
 
 export default class IPiece extends Piece {
-  constructor(x: number, y: number) {
+  constructor(pivot: PieceInterface["pivot"] = [4.5, -0.5]) {
     const id = "I";
     const color = "#00ffff";
     let matrix = [
@@ -13,7 +13,7 @@ export default class IPiece extends Piece {
     super({
       id,
       color,
-      pivot: [x, y],
+      pivot,
       matrix,
     });
     this.kickData = [
