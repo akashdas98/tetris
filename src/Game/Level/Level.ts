@@ -24,7 +24,10 @@ export default class Level extends GameUI {
   public getCurrentLevel = (): number => this.currentLevel;
 
   public updateLevel = (totalLinesCleared: number): void => {
-    if (totalLinesCleared >= this.linesForNextLevelUp) {
+    if (
+      totalLinesCleared >= this.linesForNextLevelUp &&
+      this.currentLevel < 29
+    ) {
       this.currentLevel++;
       this.linesForNextLevelUp += 10;
       this.onChange?.(this.currentLevel);
