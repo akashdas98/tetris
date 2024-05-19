@@ -1,23 +1,23 @@
-import { BoardMatrix } from "../Board/Board";
+import { CanvasMatrix } from "../../Classes/TetrominoCanvas/TetrominoCanvas";
 
 export interface PieceInterface {
   matrix: number[][];
-  pivot?: [number, number];
+  position?: [number, number];
   id: "O" | "I" | "S" | "Z" | "J" | "L" | "T";
   color: string;
 }
 
 export default abstract class Piece {
   protected matrix: PieceInterface["matrix"];
-  protected pivot: [number, number];
+  protected position: [number, number];
   protected id: PieceInterface["id"];
   protected color: PieceInterface["color"];
   protected orientation: 0 | 1 | 2 | 3;
   protected kickData: [number, number][][];
 
-  constructor({ matrix, pivot = [5, 0], id, color }: PieceInterface) {
+  constructor({ matrix, position = [4, 0], id, color }: PieceInterface) {
     this.matrix = matrix;
-    this.pivot = pivot;
+    this.position = position;
     this.id = id;
     this.color = color;
     this.orientation = 0;
@@ -53,23 +53,28 @@ export default abstract class Piece {
     ];
   }
 
-  public setPivot = (x: number, y: number): void => {
-    this.pivot = [x, y];
-  };
-
-  public getPivot = (): [number, number] => {
-    return this.pivot;
-  };
-
   public getMatrix = (): PieceInterface["matrix"] => {
-    return this.matrix;
+    return [...this.matrix];
+  };
+
+  public getPosition = (): [number, number] => {
+    return [...this.position];
+  };
+
+  public setPosition = (x: number, y: number): void => {
+    this.position = [x, y];
   };
 
   public getColor = (): PieceInterface["color"] => {
-    return this.color;
+    return `${this.color}`;
   };
 
-  public rotate = (dir: 0 | 1, boardMatrix: BoardMatrix): void => {
+  public freeRotate = (dir: 1 | 0): void => {
+    this.changeOrientation(dir);
+    this.matrix = this.rotateMatrix(this.matrix, dir);
+  };
+
+  public rotate = (dir: 0 | 1, boardMatrix: CanvasMatrix): void => {
     if (this.id === "O") return;
 
     let rotated = this.rotateMatrix(this.matrix, dir);
@@ -122,21 +127,21 @@ export default abstract class Piece {
     x: number,
     y: number,
     rotated: PieceInterface["matrix"],
-    boardMatrix: BoardMatrix
+    boardMatrix: CanvasMatrix
   ): boolean {
     let kick = true;
     for (let i = 0; i < rotated.length; i++) {
       if (
-        rotated[i][0] + this.pivot[0] + x < 0 ||
-        rotated[i][0] + this.pivot[0] + x > 9 ||
-        rotated[i][1] + this.pivot[1] + y < 0 ||
-        rotated[i][1] + this.pivot[1] + y > 19
+        rotated[i][0] + this.position[0] + x < 0 ||
+        rotated[i][0] + this.position[0] + x > 9 ||
+        rotated[i][1] + this.position[1] + y < 0 ||
+        rotated[i][1] + this.position[1] + y > 19
       ) {
         kick = false;
         break;
       } else if (
-        boardMatrix[rotated[i][1] + this.pivot[1] + y]?.[
-          rotated[i][0] + this.pivot[0] + x
+        boardMatrix[rotated[i][1] + this.position[1] + y]?.[
+          rotated[i][0] + this.position[0] + x
         ]?.value === 1
       ) {
         kick = false;
@@ -152,8 +157,8 @@ export default abstract class Piece {
     rotated: PieceInterface["matrix"],
     dir: 1 | 0
   ) {
-    this.pivot[0] += x;
-    this.pivot[1] += y;
+    this.position[0] += x;
+    this.position[1] += y;
     this.changeOrientation(dir);
   }
 

@@ -1,12 +1,13 @@
-export default class Level {
+import GameUI from "../../Classes/GameUI/GameUI";
+
+export default class Level extends GameUI {
   private currentLevel: number;
   private startingLevel: number;
   private linesForNextLevelUp: number;
   private levelSpeedList: number[];
-  private display: HTMLElement;
 
-  constructor(startingLevel: number, display: HTMLElement) {
-    this.display = display;
+  constructor(startingLevel: number, cb?: (...args: any[]) => any) {
+    super(cb);
     this.startingLevel = startingLevel;
     this.currentLevel = startingLevel;
     this.linesForNextLevelUp = Math.min(
@@ -17,12 +18,8 @@ export default class Level {
       800, 717, 633, 550, 467, 383, 300, 217, 133, 100, 83, 83, 83, 67, 67, 67,
       50, 50, 50, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 17,
     ];
-    this.updateDisplay();
+    this.onChange?.(this.currentLevel);
   }
-
-  private updateDisplay = (): void => {
-    this.display.innerText = this.currentLevel.toString();
-  };
 
   public getCurrentLevel = (): number => this.currentLevel;
 
@@ -30,8 +27,7 @@ export default class Level {
     if (totalLinesCleared >= this.linesForNextLevelUp) {
       this.currentLevel++;
       this.linesForNextLevelUp += 10;
-
-      this.updateDisplay();
+      this.onChange?.(this.currentLevel);
     }
   };
 

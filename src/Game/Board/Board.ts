@@ -1,75 +1,22 @@
-import { mutifyHexColor } from "../../utils";
 import Piece from "../Piece/Piece";
+import TetrominoCanvas from "../../Classes/TetrominoCanvas/TetrominoCanvas";
 
-export type BoardMatrix = { value: number; color: string | null }[][];
-
-export default class Board {
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
-  private scale: number;
-  private matrix: BoardMatrix;
+export default class Board extends TetrominoCanvas {
   private totalLinesCleared: number;
 
   constructor(canvas: HTMLCanvasElement, scale: number = 30) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.ctx.imageSmoothingEnabled = false;
-    this.scale = scale;
-    this.canvas.height = 20 * this.scale;
-    this.canvas.width = 10 * this.scale;
+    super(canvas, scale, 20, 10);
     this.totalLinesCleared = 0;
-    this.matrix = Array.from({ length: 20 }, () =>
-      Array.from({ length: 10 }, () => ({ value: 0, color: null }))
-    );
   }
 
-  private drawTile = (x: number, y: number, color: string): void => {
-    const strokeWidth = this.scale / 6;
-    const innerScale = this.scale - strokeWidth - 0.65 * strokeWidth;
-    this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = mutifyHexColor(color, 0.8, 0.8);
-    this.ctx.lineWidth = strokeWidth;
-    this.ctx.fillRect(
-      x * this.scale + strokeWidth / 2,
-      y * this.scale + strokeWidth / 2,
-      innerScale,
-      innerScale
-    );
-    this.ctx.strokeRect(
-      x * this.scale + strokeWidth / 2,
-      y * this.scale + strokeWidth / 2,
-      innerScale,
-      innerScale
-    );
-  };
-
   public drawPiece = (piece: Piece): void => {
-    const { getPivot, getColor, getMatrix } = piece;
-    const pivot = getPivot();
+    const { getColor, getMatrix, getPosition } = piece;
     const color = getColor();
+    const position = getPosition();
     getMatrix().forEach((tile) => {
-      this.drawTile(tile[0] + pivot[0], tile[1] + pivot[1], color);
+      this.drawTile(tile[1] + position[1], tile[0] + position[0], color);
     });
   };
-
-  public draw = (): void => {
-    this.clear();
-    for (let y = 0; y < 20; y++) {
-      for (let x = 0; x < 10; x++) {
-        const cell = this.matrix[y][x];
-        if (cell.value === 1) {
-          this.drawTile(x, y, cell.color as string);
-        }
-      }
-    }
-  };
-
-  public getMatrix = (): BoardMatrix => this.matrix;
-
-  public getCtx = (): CanvasRenderingContext2D => this.ctx;
-
-  public clear = (): void =>
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
   public clearLine = (): number => {
     const height = 20;
@@ -110,21 +57,13 @@ export default class Board {
 
   public addToStack = (piece: Piece) => {
     piece.getMatrix().forEach((tile) => {
-      const pivot = piece.getPivot();
-      const cell = this.matrix[tile[1] + pivot[1]]?.[tile[0] + pivot[0]];
-      if (cell) {
-        cell.value = 1;
-        cell.color = piece.getColor();
-      }
+      const position = piece.getPosition();
+      const row = tile[1] + position[1];
+      const col = tile[0] + position[0];
+      this.addTileToMatrix({ value: 1, color: piece.getColor() }, row, col);
     });
+    this.draw();
   };
 
   public getTotalLinesCleared = (): number => this.totalLinesCleared;
-
-  public setScale = (scale: number = 30) => {
-    this.scale = scale;
-    this.canvas.height = 20 * this.scale;
-    this.canvas.width = 10 * this.scale;
-    this.draw();
-  };
 }

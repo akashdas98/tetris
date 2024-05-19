@@ -6,8 +6,10 @@ import styles from "../style/gameComponent.module.css";
 import { areValuesClosePercentage } from "../utils";
 
 export default function GameComponent() {
-  const game = useRef<Game | null>(null);
+  const gameRef = useRef<Game | null>(null);
   const boardRef = useRef(null);
+  const [score, setScore] = useState<number>(0);
+  const [level, setLevel] = useState<number>(6);
 
   const getGameBoardScale = () => {
     const height = window.innerHeight;
@@ -32,18 +34,23 @@ export default function GameComponent() {
   };
 
   const handleResize = () => {
-    game.current?.resizeGameBoard(getGameBoardScale());
+    gameRef.current?.resizeGameBoard(getGameBoardScale());
   };
 
   const initializeGame = () => {
-    if (!boardRef.current) return;
-    const newGame = new Game(boardRef.current, 6, getGameBoardScale());
+    const newGame = new Game(
+      boardRef.current!,
+      level,
+      getGameBoardScale(),
+      setScore,
+      setLevel
+    );
     newGame.startGame();
-    game.current = newGame;
+    gameRef.current = newGame;
   };
 
   useEffect(() => {
-    if (!game.current) {
+    if (!gameRef.current) {
       initializeGame();
     }
 
@@ -66,11 +73,11 @@ export default function GameComponent() {
       <div id={styles.details}>
         <p id="scoring">
           <span>Score: </span>
-          <span id="score"></span>
+          <span id="score">{score}</span>
         </p>
         <p id="level">
-          <span>Level: </span>
-          <span id="currentLevel"></span>
+          <span>Level:</span>
+          <span id="currentLevel">{level}</span>
         </p>
       </div>
     </div>

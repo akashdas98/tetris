@@ -2,7 +2,7 @@
 
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 import styles from "../style/background.module.css";
-import BackgroundCanvas from "./BackgroundCanvas";
+import BackgroundCanvasComponent from "./BackgroundCanvasComponent";
 import { areValuesClosePercentage } from "../utils";
 
 type Props = {};
@@ -54,7 +54,7 @@ export default function Background({}: Props) {
         ref={canvasContainerRef}
         style={{ visibility: "hidden" }}
       >
-        <BackgroundCanvas />
+        <BackgroundCanvasComponent />
       </div>
     </div>
   );

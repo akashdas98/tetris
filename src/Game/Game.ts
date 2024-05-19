@@ -29,15 +29,14 @@ class Game {
   constructor(
     canvas: HTMLCanvasElement,
     startingLevel: number = 0,
-    scale: number = 30
+    scale: number = 30,
+    onChangeScore?: (...args: any[]) => any,
+    onChangeLevel?: (...args: any[]) => any
   ) {
     this.lastUpdateTime = window.performance.now();
     this.board = new Board(canvas, scale);
-    this.scoring = new Scoring(document.getElementById("score") as HTMLElement);
-    this.level = new Level(
-      startingLevel,
-      document.getElementById("currentLevel") as HTMLElement
-    );
+    this.scoring = new Scoring(onChangeScore);
+    this.level = new Level(startingLevel, onChangeLevel);
     this.currentSpeed = this.level.getCurrentSpeed();
     this.bag = [];
     this.nextPiece = this.generateRandomPiece();
@@ -96,15 +95,18 @@ class Game {
 
   private tryMove = (xOffset: number, yOffset: number) => {
     const matrix = this.currentPiece.getMatrix();
-    const pivot = this.currentPiece.getPivot();
+    const position = this.currentPiece.getPosition();
     let flag = matrix.every((tile) => {
-      const newX = tile[0] + pivot[0] + xOffset;
-      const newY = tile[1] + pivot[1] + yOffset;
+      const newX = tile[0] + position[0] + xOffset;
+      const newY = tile[1] + position[1] + yOffset;
       return this.isPositionValid(newX, newY);
     });
 
     if (flag) {
-      this.currentPiece.setPivot(pivot[0] + xOffset, pivot[1] + yOffset);
+      this.currentPiece.setPosition(
+        position[0] + xOffset,
+        position[1] + yOffset
+      );
     }
   };
 
@@ -128,10 +130,12 @@ class Game {
   private canDrop = () => {
     const boardMatrix = this.board.getMatrix();
     const matrix = this.currentPiece.getMatrix();
-    const pivot = this.currentPiece.getPivot();
+    const position = this.currentPiece.getPosition();
     return matrix.every((tile) => {
-      const newY = tile[1] + pivot[1] + 1;
-      return newY <= 19 && boardMatrix[newY]?.[tile[0] + pivot[0]]?.value !== 1;
+      const newY = tile[1] + position[1] + 1;
+      return (
+        newY <= 19 && boardMatrix[newY]?.[tile[0] + position[0]]?.value !== 1
+      );
     });
   };
 
@@ -176,8 +180,8 @@ class Game {
   };
 
   private drop = () => {
-    const pivot = this.currentPiece.getPivot();
-    this.currentPiece.setPivot(pivot[0], pivot[1] + 1);
+    const position = this.currentPiece.getPosition();
+    this.currentPiece.setPosition(position[0], position[1] + 1);
     this.redrawGameBoard();
   };
 

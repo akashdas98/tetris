@@ -1,19 +1,19 @@
 import Piece, { PieceInterface } from "./Piece";
 
 export default class OPiece extends Piece {
-  constructor(pivot?: PieceInterface["pivot"]) {
+  constructor(position?: PieceInterface["position"]) {
     const id = "O";
     const color = "#ffff00";
     let matrix = [
-      [-1, 0],
-      [0, 0],
-      [-1, -1],
       [0, -1],
+      [1, -1],
+      [0, 0],
+      [1, 0],
     ];
     super({
       id,
       color,
-      pivot,
+      position,
       matrix,
     });
   }

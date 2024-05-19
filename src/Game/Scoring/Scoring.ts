@@ -1,10 +1,11 @@
-export default class Scoring {
+import GameUI from "../../Classes/GameUI/GameUI";
+
+export default class Scoring extends GameUI {
   private score: number;
   private baseScoreMap: Record<number, number>;
-  private display: HTMLElement;
 
-  constructor(display: HTMLElement) {
-    this.display = display;
+  constructor(cb?: (...args: any[]) => any) {
+    super(cb);
     this.score = 0;
     this.baseScoreMap = {
       0: 0,
@@ -13,17 +14,13 @@ export default class Scoring {
       3: 200,
       4: 1200,
     };
-    this.updateDisplay();
+    this.onChange?.(this.score);
   }
-
-  private updateDisplay = (): void => {
-    this.display.innerText = this.score.toString();
-  };
 
   public getScore = (): number => this.score;
 
   public addScore = (clearedLines: number, level: number) => {
     this.score += this.baseScoreMap[clearedLines] * (level + 1);
-    this.updateDisplay();
+    this.onChange?.(this.score);
   };
 }
