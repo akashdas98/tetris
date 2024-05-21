@@ -68,7 +68,7 @@ export default class TetrominoCanvas {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
   public addTileToMatrix = (tile: Tile, row: number, col: number) => {
-    if (row < this.matrix.length && col < this.matrix[row].length) {
+    if (row < this.matrix.length && col < this.matrix[row]?.length) {
       this.matrix[row][col] = tile;
     }
   };

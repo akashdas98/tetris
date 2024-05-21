@@ -1,40 +1,42 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 import styles from "../style/background.module.css";
 import BackgroundCanvasComponent from "./BackgroundCanvasComponent";
 import { areValuesClosePercentage } from "../utils";
 
-type Props = {};
+type Props = {
+  children?: ReactNode;
+};
 
-export default function Background({}: Props) {
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
+export default function Background({ children }: Props) {
+  const bgRef = useRef<HTMLDivElement>(null);
 
   const handleResize = () => {
-    if (!canvasContainerRef.current) return;
-    canvasContainerRef.current.style.visibility = "visible";
+    if (!bgRef.current) return;
+    bgRef.current.style.visibility = "visible";
     const width = window.innerWidth;
     const height = window.innerHeight;
 
     if (width >= 1200) {
       if (areValuesClosePercentage(width, height, 25)) {
         const minDim = Math.min(width, height);
-        canvasContainerRef.current.style.width = `${0.9 * minDim}px`;
-        canvasContainerRef.current.style.height = `${0.9 * minDim}px`;
-        canvasContainerRef.current.style.border = "15px solid #cd712e";
+        bgRef.current.style.width = `${0.9 * minDim}px`;
+        bgRef.current.style.height = `${0.9 * minDim}px`;
+        bgRef.current.style.border = "15px solid #cd712e";
       } else if (width > height) {
-        canvasContainerRef.current.style.width = `${0.7 * width}px`;
-        canvasContainerRef.current.style.height = `${0.9 * height}px`;
-        canvasContainerRef.current.style.border = "15px solid #cd712e";
+        bgRef.current.style.width = `${0.7 * width}px`;
+        bgRef.current.style.height = `${0.9 * height}px`;
+        bgRef.current.style.border = "15px solid #cd712e";
       } else {
-        canvasContainerRef.current.style.width = `${0.9 * width}px`;
-        canvasContainerRef.current.style.height = `${0.9 * height}px`;
-        canvasContainerRef.current.style.border = "15px solid #cd712e";
+        bgRef.current.style.width = `${0.9 * width}px`;
+        bgRef.current.style.height = `${0.9 * height}px`;
+        bgRef.current.style.border = "15px solid #cd712e";
       }
     } else {
-      canvasContainerRef.current.style.width = "100%";
-      canvasContainerRef.current.style.height = "100%";
-      canvasContainerRef.current.style.border = "none";
+      bgRef.current.style.width = "100%";
+      bgRef.current.style.height = "100%";
+      bgRef.current.style.border = "none";
     }
   };
 
@@ -48,13 +50,16 @@ export default function Background({}: Props) {
   }, []);
 
   return (
-    <div className={styles.background}>
+    <div className={styles.backgroundContainer}>
       <div
-        className={styles.canvasContainer}
-        ref={canvasContainerRef}
+        className={styles.background}
+        ref={bgRef}
         style={{ visibility: "hidden" }}
       >
-        <BackgroundCanvasComponent />
+        <div className={styles.canvasContainer}>
+          <BackgroundCanvasComponent />
+        </div>
+        <div className={styles.content}>{children}</div>
       </div>
     </div>
   );

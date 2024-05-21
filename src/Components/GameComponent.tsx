@@ -5,11 +5,17 @@ import Game from "../Game/Game";
 import styles from "../style/gameComponent.module.css";
 import { areValuesClosePercentage } from "../utils";
 
-export default function GameComponent() {
+interface GameComponentPropTypes {
+  startingLevel?: number;
+}
+
+export default function GameComponent({
+  startingLevel = 6,
+}: GameComponentPropTypes) {
   const gameRef = useRef<Game | null>(null);
   const boardRef = useRef(null);
   const [score, setScore] = useState<number>(0);
-  const [level, setLevel] = useState<number>(6);
+  const [level, setLevel] = useState<number>(startingLevel);
 
   const getGameBoardScale = () => {
     const height = window.innerHeight;

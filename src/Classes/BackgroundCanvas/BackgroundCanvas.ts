@@ -16,6 +16,8 @@ type PieceData = {
 
 export default class BackgroundCanvas extends TetrominoCanvas {
   private TETRIS_PIECES: PieceData[];
+  private mouseX: number = -1;
+  private mouseY: number = -1;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -44,7 +46,36 @@ export default class BackgroundCanvas extends TetrominoCanvas {
         color: piece.getColor(),
       };
     });
+    canvas.style.pointerEvents = "auto";
+    window.addEventListener("mousemove", this.handleMouseMove);
+    window.addEventListener("mouseleave", this.handleMouseLeave);
   }
+
+  private handleMouseMove = (event: MouseEvent) => {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    this.mouseX = (event.pageX - rect.left - window.scrollX) * scaleX;
+    this.mouseY = (event.pageY - rect.top - window.scrollY) * scaleY;
+    this.draw();
+  };
+
+  private handleMouseLeave = () => {
+    this.mouseX = -1;
+    this.mouseY = -1;
+    this.draw();
+  };
+
+  private getDistanceFromPointer = (row: number, column: number): number => {
+    const tileCenterX = column * this.scale + this.scale / 2;
+    const tileCenterY = row * this.scale + this.scale / 2;
+    const distanceX = this.mouseX - tileCenterX;
+    const distanceY = this.mouseY - tileCenterY;
+    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+    return distance;
+  };
 
   private canPlacePiece = (
     shape: PieceInterface["matrix"],
@@ -79,7 +110,8 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     pieceColor: string,
     row: number,
     col: number,
-    proximity: number
+    proximity: number,
+    occurance: number
   ): boolean => {
     let count = 0;
     for (
@@ -94,7 +126,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
       ) {
         if (this.matrix[r][c].color === pieceColor) {
           count++;
-          if (count > 2) {
+          if (count > occurance) {
             return true;
           }
         }
@@ -104,9 +136,10 @@ export default class BackgroundCanvas extends TetrominoCanvas {
   };
 
   public generateBackground = (): void => {
-    const cols = this.matrix[0].length;
+    const cols = this.matrix[0]?.length;
     const rows = this.matrix.length;
-    const proximity = 2;
+    const proximity = 3;
+    const occurance = 2;
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -126,7 +159,13 @@ export default class BackgroundCanvas extends TetrominoCanvas {
               const shape = piece.shapes[shapeIndex];
               if (
                 this.canPlacePiece(shape, row, col) &&
-                !this.isPieceUsedTooOften(piece.color, row, col, proximity)
+                !this.isPieceUsedTooOften(
+                  piece.color,
+                  row,
+                  col,
+                  proximity,
+                  occurance
+                )
               ) {
                 this.placePiece({ shape, color: piece.color }, row, col);
                 piecePlaced = true;
@@ -145,8 +184,18 @@ export default class BackgroundCanvas extends TetrominoCanvas {
   protected drawTile = (row: number, column: number, color: string): void => {
     const strokeWidth = this.scale / 6;
     const innerScale = this.scale - strokeWidth - 0.65 * strokeWidth;
+    const distanceFromPointer = this.getDistanceFromPointer(row, column);
+    const distanceInTiles = Math.floor(distanceFromPointer / this.scale);
 
-    this.ctx.strokeStyle = mutifyHexColor(color, 0.4, 0.3);
+    const distanceColorMap: Map<number, string> = new Map<number, string>([
+      [0, color],
+      [1, mutifyHexColor(color, 0.8, 0.7)],
+      [2, mutifyHexColor(color, 0.6, 0.5)],
+      [2, mutifyHexColor(color, 0.5, 0.4)],
+    ]);
+
+    this.ctx.strokeStyle =
+      distanceColorMap.get(distanceInTiles) || mutifyHexColor(color, 0.4, 0.3);
     this.ctx.lineWidth = strokeWidth;
     this.ctx.strokeRect(
       column * this.scale + strokeWidth / 2,

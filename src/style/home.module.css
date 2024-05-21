@@ -1,13 +1,3 @@
 .App {
   height: 100%;
-  background-color: #000000;
-}
-
-.gameContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  position: relative;
-  z-index: 1;
 }
