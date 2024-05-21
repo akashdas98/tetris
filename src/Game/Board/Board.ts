@@ -1,5 +1,6 @@
 import Piece from "../Piece/Piece";
 import TetrominoCanvas from "../../Classes/TetrominoCanvas/TetrominoCanvas";
+import { lightenHexColor } from "../../utils";
 
 export default class Board extends TetrominoCanvas {
   private totalLinesCleared: number;
@@ -66,4 +67,21 @@ export default class Board extends TetrominoCanvas {
   };
 
   public getTotalLinesCleared = (): number => this.totalLinesCleared;
+
+  protected drawTile = (row: number, column: number, color: string): void => {
+    super.drawTile(row, column, color);
+    const strokeWidth = this.scale / 6;
+    const sparkleSizeX = this.scale / 5;
+    const sparkleSizeY = this.scale / 4;
+    const sparkleOffsetX = this.scale / 20; // Adjustable offset from the right edge
+    const sparkleOffsetY = this.scale / 32; // Adjustable offset from the top edge
+
+    this.ctx.fillStyle = lightenHexColor(color, 0.3);
+    this.ctx.fillRect(
+      (column + 1) * this.scale - sparkleSizeX - strokeWidth - sparkleOffsetX,
+      row * this.scale + strokeWidth + sparkleOffsetY,
+      sparkleSizeX,
+      sparkleSizeY
+    );
+  };
 }

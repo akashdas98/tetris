@@ -1,4 +1,4 @@
-export { mutifyHexColor } from "./mutifyHexColor";
+export { mutifyHexColor, lightenHexColor } from "./colorUtil";
 
 export function shuffle(array: any[]): any[] {
   const shuffled = [...array];

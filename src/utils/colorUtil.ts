@@ -99,3 +99,11 @@ export function mutifyHexColor(
 
   return rgbToHex(mutedR, mutedG, mutedB);
 }
+
+export function lightenHexColor(hex: string, lightness: number): string {
+  const { r, g, b } = hexToRgb(hex) as { r: number; g: number; b: number };
+  let { h, s, l } = rgbToHsl(r, g, b);
+  l = Math.min(1, l + lightness); // Increase lightness
+  const { r: newR, g: newG, b: newB } = hslToRgb(h, s, l);
+  return rgbToHex(newR, newG, newB);
+}

@@ -28,11 +28,11 @@ export default class TetrominoCanvas {
     );
   }
 
-  protected drawTile = (row: number, column: number, color: string): void => {
+  protected drawTile(row: number, column: number, color: string): void {
     const strokeWidth = this.scale / 6;
     const innerScale = this.scale - strokeWidth - 0.65 * strokeWidth;
     this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = mutifyHexColor(color, 0.8, 0.8);
+    this.ctx.strokeStyle = mutifyHexColor(color, 0.3, 0.7);
     this.ctx.lineWidth = strokeWidth;
     this.ctx.fillRect(
       column * this.scale + strokeWidth / 2,
@@ -46,7 +46,7 @@ export default class TetrominoCanvas {
       innerScale,
       innerScale
     );
-  };
+  }
 
   public draw = (
     startRow: number = 0,

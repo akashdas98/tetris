@@ -3,7 +3,7 @@ import Piece, { PieceInterface } from "./Piece";
 export default class OPiece extends Piece {
   constructor(position?: PieceInterface["position"]) {
     const id = "O";
-    const color = "#ffff00";
+    const color = "#ffe000";
     let matrix = [
       [0, -1],
       [1, -1],
