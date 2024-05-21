@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
-import { areValuesClosePercentage, mutifyHexColor, shuffle } from "../utils";
+import React, { useRef, useEffect, useState } from "react";
+import { areValuesClosePercentage } from "../utils";
 import BackgroundCanvas from "../Classes/BackgroundCanvas/BackgroundCanvas";
 
 export default function BackgroundCanvasComponent() {

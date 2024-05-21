@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import styles from "../../style/game.module.css";
+import styles from "./game.module.css";
 import GameComponent from "../../Components/GameComponent";
 import { useSearchParams } from "next/navigation";
 

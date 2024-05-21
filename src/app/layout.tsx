@@ -1,5 +1,5 @@
 import Background from "../Components/BackgroundComponent";
-import "../style/global.css";
+import "./global.css";
 
 export const metadata = {
   title: "Tetris",

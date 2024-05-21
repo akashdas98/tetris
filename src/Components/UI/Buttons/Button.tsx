@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import styles from "./button.module.css";
 
 export interface ButtonPropTypes {
   label?: string;
@@ -13,7 +14,7 @@ export default function Button(props: ButtonPropTypes) {
   const { label, iconLeft, iconRight, onClick, children, ...rest } = props;
 
   return (
-    <button onClick={onClick} {...rest}>
+    <button className={styles.button} onClick={onClick} {...rest}>
       {iconLeft && <span style={{ marginRight: "8px" }}>{iconLeft}</span>}
       <span>{children || label}</span>
       {iconRight && <span style={{ marginLeft: "8px" }}>{iconRight}</span>}

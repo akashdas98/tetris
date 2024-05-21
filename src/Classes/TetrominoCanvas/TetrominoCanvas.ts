@@ -48,10 +48,15 @@ export default class TetrominoCanvas {
     );
   };
 
-  public draw = (): void => {
-    this.clear();
-    for (let row = 0; row < this.matrix.length; row++) {
-      for (let col = 0; col < this.matrix[0].length; col++) {
+  public draw = (
+    startRow: number = 0,
+    startCol: number = 0,
+    endRow: number = this.matrix.length - 1,
+    endCol: number = this.matrix[0]?.length - 1
+  ): void => {
+    this.clear(startRow, startCol, endRow, endCol);
+    for (let row = startRow; row <= endRow; row++) {
+      for (let col = startCol; col <= endCol; col++) {
         const cell = this.matrix[row][col];
         if (cell.value === 1) {
           this.drawTile(row, col, cell.color as string);
@@ -64,8 +69,18 @@ export default class TetrominoCanvas {
 
   public getCtx = (): CanvasRenderingContext2D => this.ctx;
 
-  public clear = (): void =>
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  public clear = (
+    startRow: number = 0,
+    startCol: number = 0,
+    endRow: number = this.matrix.length - 1,
+    endCol: number = this.matrix[0]?.length - 1
+  ): void => {
+    const x = startCol * this.scale;
+    const y = startRow * this.scale;
+    const width = (endCol - startCol + 1) * this.scale;
+    const height = (endRow - startRow + 1) * this.scale;
+    this.ctx.clearRect(x, y, width, height);
+  };
 
   public addTileToMatrix = (tile: Tile, row: number, col: number) => {
     if (row < this.matrix.length && col < this.matrix[row]?.length) {

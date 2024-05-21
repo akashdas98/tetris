@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "../../Components/UI/Buttons/Button";
+import styles from "./levelSelect.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -18,16 +19,18 @@ export default function HomePage() {
   const selectLevel = (lv: number) => setLevel(lv);
 
   return (
-    <div>
-      {Array.from({ length: 10 }, (_, i) => (
-        <Button
-          key={i}
-          onClick={goToLevelSelect}
-          onMouseEnter={() => selectLevel(i)}
-        >
-          {i.toString()}
-        </Button>
-      ))}
+    <div className={styles.root}>
+      <>
+        {Array.from({ length: 10 }, (_, i) => (
+          <Button
+            key={i}
+            onClick={goToLevelSelect}
+            onMouseEnter={() => selectLevel(i)}
+          >
+            {i.toString()}
+          </Button>
+        ))}
+      </>
     </div>
   );
 }

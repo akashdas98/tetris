@@ -16,14 +16,16 @@ type PieceData = {
 
 export default class BackgroundCanvas extends TetrominoCanvas {
   private TETRIS_PIECES: PieceData[];
-  private mouseX: number = -1;
-  private mouseY: number = -1;
+  private mouseX: number;
+  private mouseY: number;
+  private hoverGlowRadius: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     scale: number = 30,
     rows: number = 10,
-    columns: number = 10
+    columns: number = 10,
+    hoverGlowRadius: number = 5
   ) {
     super(canvas, scale, rows, columns);
     this.TETRIS_PIECES = [
@@ -46,6 +48,9 @@ export default class BackgroundCanvas extends TetrominoCanvas {
         color: piece.getColor(),
       };
     });
+    this.mouseX = -1;
+    this.mouseY = -1;
+    this.hoverGlowRadius = hoverGlowRadius;
     canvas.style.pointerEvents = "auto";
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseleave", this.handleMouseLeave);
@@ -56,9 +61,24 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     const scaleX = this.canvas.width / rect.width;
     const scaleY = this.canvas.height / rect.height;
 
-    this.mouseX = (event.pageX - rect.left - window.scrollX) * scaleX;
-    this.mouseY = (event.pageY - rect.top - window.scrollY) * scaleY;
-    this.draw();
+    this.mouseX = (event.clientX - rect.left) * scaleX;
+    this.mouseY = (event.clientY - rect.top) * scaleY;
+
+    const tileX = Math.floor(this.mouseX / this.scale);
+    const tileY = Math.floor(this.mouseY / this.scale);
+
+    const startRow = Math.max(0, tileY - this.hoverGlowRadius - 1);
+    const endRow = Math.min(
+      this.matrix.length - 1,
+      tileY + this.hoverGlowRadius + 1
+    );
+    const startCol = Math.max(0, tileX - this.hoverGlowRadius - 1);
+    const endCol = Math.min(
+      this.matrix[0].length - 1,
+      tileX + this.hoverGlowRadius + 1
+    );
+
+    this.draw(startRow, startCol, endRow, endCol);
   };
 
   private handleMouseLeave = () => {
@@ -181,18 +201,46 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     this.draw();
   };
 
+  private generateGradient = (
+    radius: number,
+    color: string,
+    startSaturation: number,
+    startLightness: number
+  ): Map<number, string> => {
+    const gradientMap = new Map<number, string>();
+
+    // The 0th distance will always be (1, 1)
+    gradientMap.set(0, mutifyHexColor(color, 1, 1));
+
+    // Use an exponential decay function for saturation and lightness decrease
+    const decayRate = 5; // Adjust this rate to control aggressiveness
+
+    for (let i = 1; i <= radius; i++) {
+      const decayFactor = i / radius;
+      const saturation =
+        startSaturation +
+        (1 - startSaturation) * Math.exp(-decayRate * decayFactor);
+      const lightness =
+        startLightness +
+        (1 - startLightness) * Math.exp(-decayRate * decayFactor);
+      gradientMap.set(i, mutifyHexColor(color, saturation, lightness));
+    }
+
+    return gradientMap;
+  };
+
   protected drawTile = (row: number, column: number, color: string): void => {
     const strokeWidth = this.scale / 6;
     const innerScale = this.scale - strokeWidth - 0.65 * strokeWidth;
     const distanceFromPointer = this.getDistanceFromPointer(row, column);
     const distanceInTiles = Math.floor(distanceFromPointer / this.scale);
 
-    const distanceColorMap: Map<number, string> = new Map<number, string>([
-      [0, color],
-      [1, mutifyHexColor(color, 0.8, 0.7)],
-      [2, mutifyHexColor(color, 0.6, 0.5)],
-      [2, mutifyHexColor(color, 0.5, 0.4)],
-    ]);
+    const distanceColorMap: Map<number, string> = this.generateGradient(
+      this.hoverGlowRadius,
+      color,
+      0.4,
+      0.3
+    );
 
     this.ctx.strokeStyle =
       distanceColorMap.get(distanceInTiles) || mutifyHexColor(color, 0.4, 0.3);

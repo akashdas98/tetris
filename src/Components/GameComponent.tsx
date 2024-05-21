@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Game from "../Game/Game";
-import styles from "../style/gameComponent.module.css";
+import styles from "./gameComponent.module.css";
 import { areValuesClosePercentage } from "../utils";
 
 interface GameComponentPropTypes {

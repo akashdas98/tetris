@@ -1,7 +1,7 @@
 "use client";
 
-import React, { ReactNode, useEffect, useLayoutEffect, useRef } from "react";
-import styles from "../style/background.module.css";
+import React, { ReactNode, useEffect, useRef } from "react";
+import styles from "./background.module.css";
 import BackgroundCanvasComponent from "./BackgroundCanvasComponent";
 import { areValuesClosePercentage } from "../utils";
 
