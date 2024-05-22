@@ -1,0 +1,77 @@
+.root,
+.rootSmall,
+.rootLarge {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+
+.root {
+  padding: 12px;
+}
+
+.button,
+.buttonSmall,
+.buttonLarge {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  display: block;
+  padding: 0.5em 0.7em;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.button {
+  font-size: 1.5em;
+}
+
+.buttonSmall {
+  font-size: 1em;
+}
+
+.buttonLarge {
+  font-size: 2em;
+}
+
+.horizontalBorder,
+.horizontalBorderSmall,
+.horizontalBorderLarge,
+.verticalBorder,
+.verticalBorderSmall,
+.verticalBorderLarge {
+  position: absolute;
+  background-color: #00ffff;
+}
+
+.horizontalBorder {
+  height: 100%;
+  width: calc(100% - 24px);
+}
+
+.horizontalBorderSmall {
+  height: 100%;
+  width: calc(100% - 16px);
+}
+
+.horizontalBorderLarge {
+  height: 100%;
+  width: calc(100% - 32px);
+}
+
+.verticalBorder {
+  height: calc(100% - 24px);
+  width: 100%;
+}
+
+.verticalBorderSmall {
+  height: calc(100% - 16px);
+  width: 100%;
+}
+
+.verticalBorderLarge {
+  height: calc(100% - 32px);
+  width: 100%;
+}

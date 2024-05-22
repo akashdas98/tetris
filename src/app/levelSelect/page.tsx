@@ -6,31 +6,32 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function HomePage() {
-  const [level, setLevel] = useState<number>(0);
+  const [selectedLevel, setSelectedLevel] = useState<number>(0);
   const router = useRouter();
-  const levels = new Array(30);
 
-  const goToLevelSelect = () => {
+  const goToLevelSelect = (level: number) => {
     const query = { startingLevel: level.toString() };
     const queryString = new URLSearchParams(query).toString();
     router.push(`/game?${queryString}`);
   };
 
-  const selectLevel = (lv: number) => setLevel(lv);
+  const selectLevel = (lv: number) => setSelectedLevel(lv);
 
   return (
     <div className={styles.root}>
-      <>
+      <div className={styles.title}>Level Select</div>
+      <div className={styles.levelSelect}>
         {Array.from({ length: 10 }, (_, i) => (
           <Button
             key={i}
-            onClick={goToLevelSelect}
+            onClick={() => goToLevelSelect(i)}
             onMouseEnter={() => selectLevel(i)}
+            className={styles.levelButton}
           >
             {i.toString()}
           </Button>
         ))}
-      </>
+      </div>
     </div>
   );
 }

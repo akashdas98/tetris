@@ -24,3 +24,7 @@ export function areValuesClosePercentage(
 
   return percentageDifference <= percentageTolerance;
 }
+
+export function bidirectionalModulo(n: number, mod: number) {
+  return ((n % mod) + mod) % mod;
+}

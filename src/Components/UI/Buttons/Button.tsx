@@ -2,7 +2,6 @@ import React, { ReactNode } from "react";
 import styles from "./button.module.css";
 
 export interface ButtonPropTypes {
-  label?: string;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   children?: ReactNode;
@@ -16,7 +15,7 @@ export default function Button(props: ButtonPropTypes) {
   return (
     <button className={styles.button} onClick={onClick} {...rest}>
       {iconLeft && <span style={{ marginRight: "8px" }}>{iconLeft}</span>}
-      <span>{children || label}</span>
+      <span>{children}</span>
       {iconRight && <span style={{ marginLeft: "8px" }}>{iconRight}</span>}
     </button>
   );

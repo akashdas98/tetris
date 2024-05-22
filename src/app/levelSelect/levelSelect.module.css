@@ -1,6 +1,21 @@
 .root {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+
+.levelSelect {
+  background-color: #000000;
+  width: 20%;
+  aspect-ratio: 5/2;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.levelButton {
+  margin: 5%;
+  display: block;
 }
