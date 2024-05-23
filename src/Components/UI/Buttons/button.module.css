@@ -1,4 +1,45 @@
-.button {
-  font-size: 16px;
+.button,
+.buttonSmall,
+.buttonLarge {
   cursor: pointer;
+  line-height: 1em;
+}
+
+.button {
+  font-size: 24px;
+  padding: 12px;
+}
+
+.buttonSmall {
+  font-size: 16px;
+  padding: 8px;
+}
+
+.buttonLarge {
+  font-size: 32px;
+  padding: 16px;
+}
+
+.iconLeft {
+  margin-right: 12px;
+}
+
+.iconRight {
+  margin-left: 12px;
+}
+
+.iconLeftSmall {
+  margin-right: 8px;
+}
+
+.iconRightSmall {
+  margin-left: 8px;
+}
+
+.iconLeftLarge {
+  margin-right: 16px;
+}
+
+.iconRightLarge {
+  margin-left: 16px;
 }

@@ -60,10 +60,6 @@ export default function MainMenu() {
     return () => window.removeEventListener("keydown", handleInput);
   }, [selectedIndex]);
 
-  useEffect(() => {
-    console.log(selectedIndex);
-  }, [selectedIndex]);
-
   return (
     <div className={styles.root}>
       {buttons.map((button, i) => (

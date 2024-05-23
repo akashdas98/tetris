@@ -12,6 +12,14 @@
   padding: 12px;
 }
 
+.rootSmall {
+  padding: 8px;
+}
+
+.rootLarge {
+  padding: 16px;
+}
+
 .button,
 .buttonSmall,
 .buttonLarge {
@@ -19,21 +27,19 @@
   color: #ffffff;
   border: none;
   display: block;
-  padding: 0.5em 0.7em;
-  cursor: pointer;
   z-index: 2;
 }
 
 .button {
-  font-size: 1.5em;
+  padding: 12px 24px !important;
 }
 
 .buttonSmall {
-  font-size: 1em;
+  padding: 8px 16px !important;
 }
 
 .buttonLarge {
-  font-size: 2em;
+  padding: 16px 32px !important;
 }
 
 .horizontalBorder,

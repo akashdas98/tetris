@@ -1,0 +1,21 @@
+.heading,
+.headingSmall,
+.headingLarge {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.heading {
+  font-size: 24px;
+  padding: 24px;
+}
+
+.headingSmall {
+  font-size: 1em;
+  padding: 16px;
+}
+
+.headingLarge {
+  font-size: 2em;
+  padding: 32px;
+}

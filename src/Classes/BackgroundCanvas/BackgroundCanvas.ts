@@ -48,9 +48,9 @@ export default class BackgroundCanvas extends TetrominoCanvas {
         color: piece.getColor(),
       };
     });
-    this.mouseX = -1;
-    this.mouseY = -1;
     this.hoverGlowRadius = hoverGlowRadius;
+    this.mouseX = -this.hoverGlowRadius * this.scale;
+    this.mouseY = -this.hoverGlowRadius * this.scale;
     canvas.style.pointerEvents = "auto";
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseleave", this.handleMouseLeave);
@@ -82,8 +82,8 @@ export default class BackgroundCanvas extends TetrominoCanvas {
   };
 
   private handleMouseLeave = () => {
-    this.mouseX = -1;
-    this.mouseY = -1;
+    this.mouseX = -this.hoverGlowRadius * this.scale;
+    this.mouseY = -this.hoverGlowRadius * this.scale;
     this.draw();
   };
 

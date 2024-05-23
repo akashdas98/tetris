@@ -3,7 +3,6 @@ import styles from "./retroButton.module.css";
 import Button, { ButtonPropTypes } from "./Button";
 
 export interface RetroButtonPropTypes extends ButtonPropTypes {
-  size?: "normal" | "small" | "large";
   borderColor?: string;
   rootProps?: Record<string, any>;
   selected?: boolean;
