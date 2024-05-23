@@ -6,6 +6,10 @@
   height: 100%;
 }
 
+.heading {
+  margin-bottom: 32px;
+}
+
 .levelSelect {
   background-color: #000000;
   aspect-ratio: 5/2;

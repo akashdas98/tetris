@@ -10,9 +10,11 @@ import LPiece from "./Piece/LPiece";
 import Scoring from "./Scoring/Scoring";
 import Level from "./Level/Level";
 import { shuffle } from "../utils";
+import { Controls } from "./Controls/Controls";
 
 class Game {
   private board: Board;
+  private controls: Controls;
   private scoring: Scoring;
   private level: Level;
   private currentPiece: Piece;
@@ -35,6 +37,8 @@ class Game {
   ) {
     this.lastUpdateTime = window.performance.now();
     this.board = new Board(canvas, scale);
+    this.controls = new Controls(this, this.board);
+    this.controls.initialize();
     this.scoring = new Scoring(onChangeScore);
     this.level = new Level(startingLevel, onChangeLevel);
     this.currentSpeed = this.level.getCurrentSpeed();
@@ -45,8 +49,6 @@ class Game {
     this.accumulatedTime = 0;
     this.frameRequestHandle = null;
     this.stopped = true;
-    window.addEventListener("keydown", this.handleKeyDown);
-    window.addEventListener("keyup", this.handleKeyUp);
   }
 
   public startGame = () => {
@@ -60,69 +62,21 @@ class Game {
     this.board.setScale(scale);
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
-    const boardMatrix = this.board.getMatrix();
-
-    switch (e.key) {
-      case "ArrowLeft":
-        this.tryMove(-1, 0);
-        break;
-      case "ArrowRight":
-        this.tryMove(1, 0);
-        break;
-      case "ArrowDown":
-        this.startSoftDrop();
-        break;
-      case "ArrowUp":
-      case "c":
-        this.currentPiece.rotate(1, boardMatrix);
-        break;
-      case " ":
-        this.currentPiece.rotate(0, boardMatrix);
-        break;
-      default:
-        return;
-    }
-
-    this.redrawGameBoard();
+  public redrawGameBoard = () => {
+    this.board.draw();
+    this.board.drawPiece(this.currentPiece);
   };
 
-  private handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
-      this.stopSoftDrop();
-    }
-  };
+  public getCurrentPiece = () => this.currentPiece;
 
-  private tryMove = (xOffset: number, yOffset: number) => {
-    const matrix = this.currentPiece.getMatrix();
-    const position = this.currentPiece.getPosition();
-    let flag = matrix.every((tile) => {
-      const newX = tile[0] + position[0] + xOffset;
-      const newY = tile[1] + position[1] + yOffset;
-      return this.isPositionValid(newX, newY);
-    });
-
-    if (flag) {
-      this.currentPiece.setPosition(
-        position[0] + xOffset,
-        position[1] + yOffset
-      );
-    }
-  };
-
-  private isPositionValid = (x: number, y: number) => {
-    const boardMatrix = this.board.getMatrix();
-    return x >= 0 && x <= 9 && y <= 19 && boardMatrix[y]?.[x]?.value !== 1;
-  };
-
-  private startSoftDrop = (): void => {
+  public startSoftDrop = (): void => {
     if (!this.isSoftDropping) {
       this.updateCurrentSpeed(Math.min(100, this.level.getCurrentSpeed() / 2));
       this.isSoftDropping = true;
     }
   };
 
-  private stopSoftDrop = (): void => {
+  public stopSoftDrop = (): void => {
     this.updateCurrentSpeed(this.level.getCurrentSpeed());
     this.isSoftDropping = false;
   };
@@ -137,11 +91,6 @@ class Game {
         newY <= 19 && boardMatrix[newY]?.[tile[0] + position[0]]?.value !== 1
       );
     });
-  };
-
-  private redrawGameBoard = () => {
-    this.board.draw();
-    this.board.drawPiece(this.currentPiece);
   };
 
   private updateCurrentSpeed = (speed: number): void => {

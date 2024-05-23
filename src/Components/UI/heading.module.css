@@ -3,19 +3,20 @@
 .headingLarge {
   color: #ffffff;
   background-color: #000000;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 6px #000000, 0 0 0 10px #ffffff;
 }
 
 .heading {
   font-size: 24px;
-  padding: 24px;
-}
-
-.headingSmall {
-  font-size: 1em;
   padding: 16px;
 }
 
+.headingSmall {
+  font-size: 16px;
+  padding: 12px;
+}
+
 .headingLarge {
-  font-size: 2em;
-  padding: 32px;
+  font-size: 32px;
+  padding: 24px;
 }

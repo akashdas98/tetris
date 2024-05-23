@@ -88,7 +88,9 @@ export default class TetrominoCanvas {
     }
   };
 
-  public setScale = (scale: number = 30) => {
+  public getScale = (): number => this.scale;
+
+  public setScale = (scale: number = 30): void => {
     this.scale = scale;
     this.canvas.height = this.matrix.length * this.scale;
     this.canvas.width = this.matrix[0].length * this.scale;

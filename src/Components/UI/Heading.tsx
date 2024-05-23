@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import styles from "./heading.module.css";
+import classnames from "classnames";
 import { UiSize } from "../../PropTypes";
 
 type Props = {
@@ -27,7 +28,7 @@ export default function Heading({ size = "normal", children, ...rest }: Props) {
   }, [size]);
 
   return (
-    <div {...rest} className={`${classNames.heading} ${rest?.className || ""}`}>
+    <div {...rest} className={classnames(classNames.heading, rest?.className)}>
       {children}
     </div>
   );

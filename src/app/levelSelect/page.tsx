@@ -20,7 +20,7 @@ export default function HomePage() {
 
   return (
     <div className={styles.root}>
-      <Heading>Level Select</Heading>
+      <Heading className={styles.heading}>Level Select</Heading>
       <div className={styles.levelSelect}>
         {Array.from({ length: 10 }, (_, i) => (
           <Button

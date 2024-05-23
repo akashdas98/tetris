@@ -6,4 +6,8 @@
   height: 100%;
   position: relative;
   z-index: 1;
+  touch-action: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
