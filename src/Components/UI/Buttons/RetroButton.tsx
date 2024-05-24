@@ -1,26 +1,26 @@
 import React, { useMemo, useState } from "react";
 import styles from "./retroButton.module.css";
+import classnames from "classnames";
 import Button, { ButtonPropTypes } from "./Button";
 
 export interface RetroButtonPropTypes extends ButtonPropTypes {
   borderColor?: string;
+  selectBorderColor?: string;
   rootProps?: Record<string, any>;
-  selected?: boolean;
-  selectColor?: string;
-  disableSelect?: boolean;
   rootSelectStyle?: React.CSSProperties;
-  selectStyle?: React.CSSProperties;
+  rootSelectClassName?: string;
 }
 
 export default function RetroButton({
   size = "normal",
   borderColor = "#00ffff",
+  selectColor = "#ffd000",
+  selectBorderColor = "#00ffff",
   rootProps = {},
   selected = false,
-  selectColor = "#ffd000",
   disableSelect = false,
   rootSelectStyle = {},
-  selectStyle = {},
+  rootSelectClassName,
   ...rest
 }: RetroButtonPropTypes) {
   const classNames = useMemo(() => {
@@ -63,7 +63,10 @@ export default function RetroButton({
   return (
     <div
       {...rootProps}
-      className={classNames.root}
+      className={classnames(
+        classNames.root,
+        selected && !disableSelect ? rootSelectClassName : null
+      )}
       style={{
         ...rootProps?.style,
         transform: selected && !disableSelect ? "scale(1.2)" : undefined,
@@ -83,23 +86,24 @@ export default function RetroButton({
     >
       <Button
         {...rest}
+        selectColor={selectColor}
+        selected={selected}
         className={classNames.button}
         style={{
+          color: "#ffffff",
           ...rest?.style,
-          color: selected && !disableSelect ? selectColor : null,
-          ...(selected && !disableSelect && selectStyle),
         }}
       />
       <div
         className={classNames.horizontalBorder}
         style={{
-          color: borderColor,
+          color: selected ? selectBorderColor : borderColor,
         }}
       />
       <div
         className={classNames.verticalBorder}
         style={{
-          color: borderColor,
+          color: selected ? selectBorderColor : borderColor,
         }}
       />
     </div>

@@ -11,6 +11,11 @@ export interface ButtonPropTypes {
   iconRightProps?: Record<string, any>;
   children?: ReactNode;
   onClick?: (...args: any[]) => any;
+  selected?: boolean;
+  selectColor?: string;
+  disableSelect?: boolean;
+  selectStyle?: React.CSSProperties;
+  selectClassName?: string;
   [key: string]: any;
 }
 
@@ -22,6 +27,11 @@ export default function Button({
   iconRightProps = {},
   onClick,
   children,
+  selected = false,
+  selectColor,
+  disableSelect = false,
+  selectStyle = {},
+  selectClassName,
   ...rest
 }: ButtonPropTypes) {
   const classNames = useMemo(() => {
@@ -51,7 +61,16 @@ export default function Button({
     <button
       onClick={onClick}
       {...rest}
-      className={classnames(classNames.button, rest?.className)}
+      style={{
+        ...rest?.style,
+        color: selected && !disableSelect ? selectColor : rest?.style?.color,
+        ...(selected && !disableSelect && selectStyle),
+      }}
+      className={classnames(
+        classNames.button,
+        rest?.className,
+        selected && !disableSelect ? selectClassName : null
+      )}
     >
       {iconLeft && (
         <span

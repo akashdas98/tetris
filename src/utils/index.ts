@@ -28,3 +28,9 @@ export function areValuesClosePercentage(
 export function bidirectionalModulo(n: number, mod: number) {
   return ((n % mod) + mod) % mod;
 }
+
+export function importantStyleString(styles: React.CSSProperties): string {
+  return Object.entries(styles)
+    .map(([key, value]) => `${key}: ${value} !important;`)
+    .join(" ");
+}

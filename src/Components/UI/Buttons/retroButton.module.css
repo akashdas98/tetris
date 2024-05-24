@@ -24,7 +24,6 @@
 .buttonSmall,
 .buttonLarge {
   background-color: #000000;
-  color: #ffffff;
   border: none;
   display: block;
   z-index: 2;
