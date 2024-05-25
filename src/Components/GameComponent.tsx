@@ -69,13 +69,16 @@ export default function GameComponent({
 
   return (
     <div id="gameComponent">
-      <canvas
-        style={{
-          background: "#000000",
-          display: "block",
-        }}
-        ref={boardRef}
-      />
+      <div className={styles.canvasContainer}>
+        <canvas
+          style={{
+            background: "#000000",
+            display: "block",
+          }}
+          ref={boardRef}
+        />
+      </div>
+
       <div id={styles.details}>
         <p id="scoring">
           <span>Score: </span>

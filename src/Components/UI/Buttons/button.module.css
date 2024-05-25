@@ -3,45 +3,45 @@
 .buttonLarge {
   cursor: pointer;
   line-height: 1em;
-  border: 1px solid #000000;
+  border: 2px solid #000000;
   color: #000000;
 }
 
 .button {
-  font-size: 24px;
-  padding: 12px;
+  font-size: var(--size-normal-base);
+  padding: var(--size-normal-padding);
 }
 
 .buttonSmall {
-  font-size: 16px;
-  padding: 8px;
+  font-size: var(--size-small-base);
+  padding: var(--size-small-padding);
 }
 
 .buttonLarge {
-  font-size: 32px;
-  padding: 16px;
+  font-size: var(--size-large-base);
+  padding: var(--size-large-padding);
 }
 
 .iconLeft {
-  margin-right: 12px;
+  margin-right: var(--size-normal-padding);
 }
 
 .iconRight {
-  margin-left: 12px;
+  margin-left: var(--size-normal-padding);
 }
 
 .iconLeftSmall {
-  margin-right: 8px;
+  margin-right: var(--size-small-padding);
 }
 
 .iconRightSmall {
-  margin-left: 8px;
+  margin-left: var(--size-small-padding);
 }
 
 .iconLeftLarge {
-  margin-right: 16px;
+  margin-right: var(--size-large-padding);
 }
 
 .iconRightLarge {
-  margin-left: 16px;
+  margin-left: var(--size-large-padding);
 }

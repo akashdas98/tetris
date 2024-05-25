@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import styles from "./retroButton.module.css";
 import classnames from "classnames";
 import Button, { ButtonPropTypes } from "./Button";
+import theme from "../../../theme";
 
 export interface RetroButtonPropTypes extends ButtonPropTypes {
   borderColor?: string;
@@ -13,9 +14,9 @@ export interface RetroButtonPropTypes extends ButtonPropTypes {
 
 export default function RetroButton({
   size = "normal",
-  borderColor = "#00ffff",
+  borderColor = theme.color.primary,
   selectColor = "#ffd000",
-  selectBorderColor = "#00ffff",
+  selectBorderColor = theme.color.primary,
   rootProps = {},
   selected = false,
   disableSelect = false,
@@ -49,17 +50,6 @@ export default function RetroButton({
     }
   }, [size]);
 
-  const insetBoxShadow = useMemo(() => {
-    switch (size) {
-      case "small":
-        return "8px";
-      case "large":
-        return "12px";
-      default:
-        return "16px";
-    }
-  }, [size]);
-
   return (
     <div
       {...rootProps}
@@ -74,7 +64,7 @@ export default function RetroButton({
         boxShadow:
           selected && !disableSelect
             ? [
-                `inset 0 0 0 ${insetBoxShadow} rgba(0, 0, 0, 1)`,
+                `inset 0 0 0 ${theme.size[size].padding} rgba(0, 0, 0, 1)`,
                 "0 0 0 35px rgba(0, 0, 0, 0.3)",
                 "0 0 0 25px rgba(0, 0, 0, 0.4)",
                 "0 0 0 15px rgba(0, 0, 0, 0.5)",
@@ -97,13 +87,13 @@ export default function RetroButton({
       <div
         className={classNames.horizontalBorder}
         style={{
-          color: selected ? selectBorderColor : borderColor,
+          backgroundColor: selected ? selectBorderColor : borderColor,
         }}
       />
       <div
         className={classNames.verticalBorder}
         style={{
-          color: selected ? selectBorderColor : borderColor,
+          backgroundColor: selected ? selectBorderColor : borderColor,
         }}
       />
     </div>

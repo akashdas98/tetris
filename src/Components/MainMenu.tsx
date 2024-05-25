@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import RetroButton from "./UI/Buttons/RetroButton";
 import { useEffect, useState } from "react";
 import { bidirectionalModulo } from "../utils";
+import theme from "../theme";
 
 export default function MainMenu() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function MainMenu() {
           key={i}
           rootProps={{
             style: {
-              margin: "24px",
+              margin: theme.size.normal.base,
             },
           }}
           onMouseEnter={() => handleHover(i)}

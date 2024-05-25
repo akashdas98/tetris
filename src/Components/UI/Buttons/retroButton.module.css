@@ -9,36 +9,36 @@
 }
 
 .root {
-  padding: 12px;
+  padding: var(--size-normal-padding);
 }
 
 .rootSmall {
-  padding: 8px;
+  padding: var(--size-small-padding);
 }
 
 .rootLarge {
-  padding: 16px;
+  padding: var(--size-large-padding);
 }
 
 .button,
 .buttonSmall,
 .buttonLarge {
-  background-color: #000000;
+  background-color: var(--color-background);
   border: none;
   display: block;
   z-index: 2;
 }
 
 .button {
-  padding: 12px 24px !important;
+  padding: var(--size-normal-padding) var(--size-normal-base) !important;
 }
 
 .buttonSmall {
-  padding: 8px 16px !important;
+  padding: var(--size-normal-padding) var(--size-normal-base) !important;
 }
 
 .buttonLarge {
-  padding: 16px 32px !important;
+  padding: var(--size-normal-padding) var(--size-normal-base) !important;
 }
 
 .horizontalBorder,
@@ -48,35 +48,34 @@
 .verticalBorderSmall,
 .verticalBorderLarge {
   position: absolute;
-  background-color: #00ffff;
 }
 
 .horizontalBorder {
   height: 100%;
-  width: calc(100% - 24px);
+  width: calc(100% - var(--size-normal-base));
 }
 
 .horizontalBorderSmall {
   height: 100%;
-  width: calc(100% - 16px);
+  width: calc(100% - var(--size-small-base));
 }
 
 .horizontalBorderLarge {
   height: 100%;
-  width: calc(100% - 32px);
+  width: calc(100% - var(--size-large-base));
 }
 
 .verticalBorder {
-  height: calc(100% - 24px);
+  height: calc(100% - var(--size-normal-base));
   width: 100%;
 }
 
 .verticalBorderSmall {
-  height: calc(100% - 16px);
+  height: calc(100% - var(--size-small-base));
   width: 100%;
 }
 
 .verticalBorderLarge {
-  height: calc(100% - 32px);
+  height: calc(100% - var(--size-large-base));
   width: 100%;
 }

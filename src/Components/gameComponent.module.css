@@ -1,4 +1,10 @@
 #details {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--color-background);
+  color: var(--color-base);
+}
+
+.canvasContainer {
+  box-shadow: 0 0 0 0.125em var(--color-primary),
+    0 0 0 0.375em var(--color-background), 0 0 0 0.625em var(--color-primary);
+  margin: 0.625em;
 }

@@ -7,7 +7,7 @@ import styles from "./levelSelect.module.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function HomePage() {
+export default function LevelSelect() {
   const router = useRouter();
   const [selectionIndex, setSelectionIndex] = useState<number | null>(null);
   const numLevels = 10;

@@ -8,19 +8,23 @@
 
 .heading {
   margin-bottom: 32px;
+  box-shadow: 0 0 0 0.125em var(--color-primary),
+    0 0 0 0.375em var(--color-background), 0 0 0 0.625em var(--color-primary);
 }
 
 .levelSelect {
-  background-color: #000000;
+  background-color: var(--color-background);
   aspect-ratio: 5/2;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(2, 1fr);
+  gap: 4px;
+  padding: 4px;
 }
 
 .levelButton {
-  margin: 5%;
   display: block;
+  outline: none;
 }
 
 .selectedLevelButton {

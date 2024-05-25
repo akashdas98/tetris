@@ -25,7 +25,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     scale: number = 30,
     rows: number = 10,
     columns: number = 10,
-    hoverGlowRadius: number = 5
+    hoverGlowRadius: number = 3
   ) {
     super(canvas, scale, rows, columns);
     this.TETRIS_PIECES = [
@@ -213,7 +213,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     gradientMap.set(0, mutifyHexColor(color, 1, 1));
 
     // Use an exponential decay function for saturation and lightness decrease
-    const decayRate = 5; // Adjust this rate to control aggressiveness
+    const decayRate = 3; // Adjust this rate to control aggressiveness
 
     for (let i = 1; i <= radius; i++) {
       const decayFactor = i / radius;

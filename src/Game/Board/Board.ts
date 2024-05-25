@@ -70,10 +70,10 @@ export default class Board extends TetrominoCanvas {
 
   protected drawTile = (row: number, column: number, color: string): void => {
     super.drawTile(row, column, color);
-    const strokeWidth = this.scale / 6;
+    const strokeWidth = this.getStrokeWidth();
     const sparkleSizeX = this.scale / 5;
     const sparkleSizeY = this.scale / 4;
-    const sparkleOffsetX = this.scale / 20; // Adjustable offset from the right edge
+    const sparkleOffsetX = this.scale / 32; // Adjustable offset from the right edge
     const sparkleOffsetY = this.scale / 32; // Adjustable offset from the top edge
 
     this.ctx.fillStyle = lightenHexColor(color, 0.3);

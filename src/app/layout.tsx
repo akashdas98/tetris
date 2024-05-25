@@ -1,5 +1,8 @@
+import { DocumentContext } from "next/document";
 import Background from "../Components/BackgroundComponent";
 import "./global.css";
+import { getCssVars } from "../utils";
+import theme from "../theme";
 
 export const metadata = {
   title: "Tetris",
@@ -13,6 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <style>{getCssVars(theme)}</style>
+      </head>
       <body>
         <Background>{children}</Background>
       </body>

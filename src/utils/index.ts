@@ -1,4 +1,5 @@
 export { mutifyHexColor, lightenHexColor } from "./colorUtil";
+export { getCssVars } from "./cssUtil";
 
 export function shuffle(array: any[]): any[] {
   const shuffled = [...array];
