@@ -15,7 +15,7 @@ export interface RetroButtonPropTypes extends ButtonPropTypes {
 export default function RetroButton({
   size = "normal",
   borderColor = theme.color.primary,
-  selectColor = "#ffd000",
+  selectColor = theme.color.secondary,
   selectBorderColor = theme.color.primary,
   rootProps = {},
   selected = false,

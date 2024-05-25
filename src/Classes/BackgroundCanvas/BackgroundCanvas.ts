@@ -122,7 +122,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
   ): void => {
     for (let i = 0; i < shape.length; i++) {
       const tile = shape[i];
-      this.matrix[row + tile[1]][col + tile[0]] = { value: 1, color };
+      this.addTileToMatrix({ value: 1, color }, row + tile[1], col + tile[0]);
     }
   };
 

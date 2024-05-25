@@ -1,24 +1,14 @@
 import Board from "./Board/Board";
-import Piece from "./Piece/Piece";
-import TPiece from "./Piece/TPiece";
-import IPiece from "./Piece/IPiece";
-import OPiece from "./Piece/OPiece";
-import SPiece from "./Piece/SPiece";
-import JPiece from "./Piece/JPiece";
-import ZPiece from "./Piece/ZPiece";
-import LPiece from "./Piece/LPiece";
-import Scoring from "./Scoring/Scoring";
-import Level from "./Level/Level";
-import { shuffle } from "../utils";
 import { Controls } from "./Controls/Controls";
+import PieceController from "./PieceController/PieceController";
+import Statistics, { StatisticsInterface } from "./Statistics/Statistics";
 
 class Game {
+  private pieceController: PieceController;
   private board: Board;
   private controls: Controls;
-  private scoring: Scoring;
-  private level: Level;
-  private currentPiece: Piece;
-  private nextPiece: Piece;
+  private statistics: Statistics;
+
   private stopTimeout: NodeJS.Timeout | undefined;
   private stopped: boolean;
   private currentSpeed: number;
@@ -26,25 +16,32 @@ class Game {
   private lastUpdateTime: number;
   private accumulatedTime: number;
   private frameRequestHandle: number | null;
-  private bag: Piece[];
 
   constructor(
     canvas: HTMLCanvasElement,
     startingLevel: number = 0,
     scale: number = 30,
-    onChangeScore?: (...args: any[]) => any,
-    onChangeLevel?: (...args: any[]) => any
+    onChangeScore?: StatisticsInterface["scoringCb"],
+    onChangeLevel?: StatisticsInterface["levelCb"],
+    onChangeStats?: StatisticsInterface["cb"]
   ) {
     this.lastUpdateTime = window.performance.now();
+    this.pieceController = new PieceController();
     this.board = new Board(canvas, scale);
-    this.controls = new Controls(this, this.board);
+    this.controls = new Controls({
+      game: this,
+      board: this.board,
+      pieceController: this.pieceController,
+    });
     this.controls.initialize();
-    this.scoring = new Scoring(onChangeScore);
-    this.level = new Level(startingLevel, onChangeLevel);
-    this.currentSpeed = this.level.getCurrentSpeed();
-    this.bag = [];
-    this.nextPiece = this.generateRandomPiece();
-    this.currentPiece = this.nextPiece;
+    this.statistics = new Statistics({
+      cb: onChangeStats,
+      scoringCb: onChangeScore,
+      levelCb: onChangeLevel,
+      board: this.board,
+      startingLevel,
+    });
+    this.currentSpeed = this.statistics.getLevel().getCurrentSpeed();
     this.isSoftDropping = false;
     this.accumulatedTime = 0;
     this.frameRequestHandle = null;
@@ -54,43 +51,33 @@ class Game {
   public startGame = () => {
     this.stopped = false;
     console.log("STARTED");
-    this.spawn();
+    this.pieceController.spawn();
+    this.board.drawPiece(this.pieceController.getCurrentPiece());
     this.startDropLoop();
   };
 
-  public resizeGameBoard = (scale: number = 30) => {
+  public setScale = (scale: number = 30) => {
     this.board.setScale(scale);
+    this.statistics.setScale(scale);
   };
 
   public redrawGameBoard = () => {
     this.board.draw();
-    this.board.drawPiece(this.currentPiece);
+    this.board.drawPiece(this.pieceController.getCurrentPiece());
   };
-
-  public getCurrentPiece = () => this.currentPiece;
 
   public startSoftDrop = (): void => {
     if (!this.isSoftDropping) {
-      this.updateCurrentSpeed(Math.min(100, this.level.getCurrentSpeed() / 2));
+      this.updateCurrentSpeed(
+        Math.min(100, this.statistics.getLevel().getCurrentSpeed() / 2)
+      );
       this.isSoftDropping = true;
     }
   };
 
   public stopSoftDrop = (): void => {
-    this.updateCurrentSpeed(this.level.getCurrentSpeed());
+    this.updateCurrentSpeed(this.statistics.getLevel().getCurrentSpeed());
     this.isSoftDropping = false;
-  };
-
-  private canDrop = () => {
-    const boardMatrix = this.board.getMatrix();
-    const matrix = this.currentPiece.getMatrix();
-    const position = this.currentPiece.getPosition();
-    return matrix.every((tile) => {
-      const newY = tile[1] + position[1] + 1;
-      return (
-        newY <= 19 && boardMatrix[newY]?.[tile[0] + position[0]]?.value !== 1
-      );
-    });
   };
 
   private updateCurrentSpeed = (speed: number): void => {
@@ -108,8 +95,8 @@ class Game {
 
     // Use currentSpeed to determine logic update frequency
     while (this.accumulatedTime > this.currentSpeed) {
-      if (this.canDrop()) {
-        this.drop();
+      if (this.pieceController.canDrop(this.board.getMatrix())) {
+        this.pieceController.drop();
       } else if (!this.stopTimeout) {
         this.queueStop();
       }
@@ -122,18 +109,6 @@ class Game {
     }
   };
 
-  private spawn = () => {
-    this.currentPiece = this.nextPiece;
-    this.nextPiece = this.generateRandomPiece();
-    this.board.drawPiece(this.currentPiece);
-  };
-
-  private drop = () => {
-    const position = this.currentPiece.getPosition();
-    this.currentPiece.setPosition(position[0], position[1] + 1);
-    this.redrawGameBoard();
-  };
-
   private queueStop = () => {
     if (this.stopTimeout) return;
     console.log("STOPPING");
@@ -143,7 +118,7 @@ class Game {
   private stop = (): void => {
     console.log("STOPPED");
     this.clearStopTimeout();
-    if (this.canDrop()) {
+    if (this.pieceController.canDrop(this.board.getMatrix())) {
       console.log("STOP CANCELLED");
       return;
     }
@@ -158,13 +133,18 @@ class Game {
   };
 
   private handlePostOps = () => {
+    const scoring = this.statistics.getScoring();
+    const level = this.statistics.getLevel();
+
     console.log("ADDING TO BOARD");
-    this.board.addToStack(this.currentPiece);
+    this.board.addToStack(this.pieceController.getCurrentPiece());
+
     console.log("CLEARING LINES");
     const clearedLines = this.board.clearLine();
-    this.scoring.addScore(clearedLines, this.level.getCurrentLevel());
-    this.level.updateLevel(this.board.getTotalLinesCleared());
-    this.updateCurrentSpeed(this.level.getCurrentSpeed());
+
+    scoring.addScore(clearedLines, level.getCurrentLevel());
+    level.updateLevel(this.board.getTotalLinesCleared());
+    this.updateCurrentSpeed(level.getCurrentSpeed());
   };
 
   private clearDropInterval = (): void => {
@@ -177,27 +157,6 @@ class Game {
   private clearStopTimeout = (): void => {
     if (this.stopTimeout) clearTimeout(this.stopTimeout);
     this.stopTimeout = undefined;
-  };
-
-  private generateBag = (): Piece[] => {
-    const bag: Piece[] = [
-      new IPiece(),
-      new OPiece(),
-      new TPiece(),
-      new SPiece(),
-      new ZPiece(),
-      new JPiece(),
-      new LPiece(),
-    ];
-    return shuffle(bag);
-  };
-
-  private generateRandomPiece = (): Piece => {
-    if (this.bag.length === 0) {
-      this.bag = this.generateBag();
-    }
-    const nextPiece = this.bag.pop() as Piece;
-    return nextPiece;
   };
 }
 

@@ -1,11 +1,14 @@
-import GameUI from "../../Classes/GameUI/GameUI";
+import GameUI, { GameUIInterface } from "../../Classes/GameUI/GameUI";
 
+export interface ScoringInterface extends GameUIInterface {
+  cb?: (score: number) => any;
+}
 export default class Scoring extends GameUI {
   private score: number;
   private baseScoreMap: Record<number, number>;
 
-  constructor(cb?: (...args: any[]) => any) {
-    super(cb);
+  constructor({ cb }: ScoringInterface) {
+    super({ cb });
     this.score = 0;
     this.baseScoreMap = {
       0: 0,

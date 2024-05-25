@@ -1,13 +1,17 @@
-import GameUI from "../../Classes/GameUI/GameUI";
+import GameUI, { GameUIInterface } from "../../Classes/GameUI/GameUI";
 
+export interface LevelInterface extends GameUIInterface {
+  cb?: (level: number) => any;
+  startingLevel: number;
+}
 export default class Level extends GameUI {
   private currentLevel: number;
   private startingLevel: number;
   private linesForNextLevelUp: number;
   private levelSpeedList: number[];
 
-  constructor(startingLevel: number, cb?: (...args: any[]) => any) {
-    super(cb);
+  constructor({ cb, startingLevel }: LevelInterface) {
+    super({ cb });
     this.startingLevel = startingLevel;
     this.currentLevel = startingLevel;
     this.linesForNextLevelUp = Math.min(

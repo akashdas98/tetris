@@ -1,18 +1,28 @@
 import Board from "../Board/Board";
 import Game from "../Game";
+import PieceController from "../PieceController/PieceController";
+
+export interface ControlsInterface {
+  game: Game;
+  board: Board;
+  pieceController: PieceController;
+}
 
 export class Controls {
   private game: Game;
   private board: Board;
+  private pieceController: PieceController;
   private touchStartX: number | null;
   private touchStartY: number | null;
   private touchX: number | null;
   private touchY: number | null;
   private touchMoving: boolean;
 
-  constructor(game: Game, board: Board) {
+  constructor({ game, board, pieceController }: ControlsInterface) {
     this.game = game;
     this.board = board;
+    this.pieceController = pieceController;
+
     this.touchStartX = null;
     this.touchStartY = null;
     this.touchX = null;
@@ -51,6 +61,7 @@ export class Controls {
     const deltaX = touch.clientX - this.touchX;
     const deltaY = touch.clientY - this.touchY;
     const touchThreshold = this.board.getScale();
+    const boardMatrix = this.board.getMatrix();
 
     if (Math.abs(deltaX) > touchThreshold * 1.5) {
       this.touchMoving = true;
@@ -59,9 +70,9 @@ export class Controls {
     if (Math.abs(deltaX) > touchThreshold && this.touchMoving) {
       this.game.stopSoftDrop();
       if (deltaX > 0) {
-        this.tryMove(1, 0); // Swipe right
+        this.pieceController.tryMove(1, 0, boardMatrix); // Swipe right
       } else {
-        this.tryMove(-1, 0); // Swipe left
+        this.pieceController.tryMove(-1, 0, boardMatrix); // Swipe left
       }
       this.touchX = touch.clientX;
       this.touchY = touch.clientY;
@@ -93,9 +104,9 @@ export class Controls {
     ) {
       const windowWidth = window.innerWidth;
       if (endX < windowWidth / 2) {
-        this.game.getCurrentPiece().rotate(0, this.board.getMatrix()); // Tap left half to rotate left
+        this.pieceController.rotateCurrentPiece(0, this.board.getMatrix()); // Tap left half to rotate left
       } else {
-        this.game.getCurrentPiece().rotate(1, this.board.getMatrix()); // Tap right half to rotate right
+        this.pieceController.rotateCurrentPiece(1, this.board.getMatrix()); // Tap right half to rotate right
       }
     }
 
@@ -112,20 +123,20 @@ export class Controls {
 
     switch (e.key) {
       case "ArrowLeft":
-        this.tryMove(-1, 0);
+        this.pieceController.tryMove(-1, 0, boardMatrix);
         break;
       case "ArrowRight":
-        this.tryMove(1, 0);
+        this.pieceController.tryMove(1, 0, boardMatrix);
         break;
       case "ArrowDown":
         this.game.startSoftDrop();
         break;
       case "ArrowUp":
       case "c":
-        this.game.getCurrentPiece().rotate(1, boardMatrix);
+        this.pieceController.rotateCurrentPiece(1, boardMatrix);
         break;
       case " ":
-        this.game.getCurrentPiece().rotate(0, boardMatrix);
+        this.pieceController.rotateCurrentPiece(0, boardMatrix);
         break;
       default:
         return;
@@ -137,27 +148,6 @@ export class Controls {
   private handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       this.game.stopSoftDrop();
-    }
-  };
-
-  private isPositionValid = (x: number, y: number) => {
-    const boardMatrix = this.board.getMatrix();
-    return x >= 0 && x <= 9 && y <= 19 && boardMatrix[y]?.[x]?.value !== 1;
-  };
-
-  private tryMove = (xOffset: number, yOffset: number) => {
-    const matrix = this.game.getCurrentPiece().getMatrix();
-    const position = this.game.getCurrentPiece().getPosition();
-    let flag = matrix.every((tile) => {
-      const newX = tile[0] + position[0] + xOffset;
-      const newY = tile[1] + position[1] + yOffset;
-      return this.isPositionValid(newX, newY);
-    });
-
-    if (flag) {
-      this.game
-        .getCurrentPiece()
-        .setPosition(position[0] + xOffset, position[1] + yOffset);
     }
   };
 }
