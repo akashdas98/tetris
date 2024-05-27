@@ -6,10 +6,8 @@
   height: 100%;
 }
 
-.heading {
+.headingContainer {
   margin-bottom: 32px;
-  box-shadow: 0 0 0 0.125em var(--color-primary),
-    0 0 0 0.375em var(--color-background), 0 0 0 0.625em var(--color-primary);
 }
 
 .levelSelect {
@@ -30,4 +28,5 @@
 .selectedLevelButton {
   transform: scale(1.2);
   transition: transform 0.1s ease;
+  color: var(--color-secondary);
 }

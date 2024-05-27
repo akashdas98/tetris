@@ -1,6 +1,5 @@
-import { CanvasMatrix } from "../../Classes/TetrominoCanvas/TetrominoCanvas";
-import { shuffle } from "../../utils";
-import Board from "../Board/Board";
+import { CanvasMatrix } from "../../TetrominoCanvas/TetrominoCanvas";
+import { shuffle } from "../../../utils";
 import IPiece from "../Piece/IPiece";
 import JPiece from "../Piece/JPiece";
 import LPiece from "../Piece/LPiece";
@@ -27,6 +26,8 @@ export default class PieceController {
   };
 
   public getCurrentPiece = (): Piece => this.currentPiece;
+
+  public getNextPiece = (): Piece => this.nextPiece;
 
   public rotateCurrentPiece = (dir: 0 | 1, boardMatrix: CanvasMatrix): void => {
     this.currentPiece.rotate(dir, boardMatrix);

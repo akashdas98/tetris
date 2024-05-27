@@ -1,21 +1,8 @@
-import IPiece from "../../Game/Piece/IPiece";
-import OPiece from "../../Game/Piece/OPiece";
-import Piece, { PieceInterface } from "../../Game/Piece/Piece";
-import TPiece from "../../Game/Piece/TPiece";
-import SPiece from "../../Game/Piece/SPiece";
+import { PieceInterface } from "../../Classes/Game/Piece/Piece";
 import { mutifyHexColor, shuffle } from "../../utils";
 import TetrominoCanvas from "../TetrominoCanvas/TetrominoCanvas";
-import ZPiece from "../../Game/Piece/ZPiece";
-import JPiece from "../../Game/Piece/JPiece";
-import LPiece from "../../Game/Piece/LPiece";
-
-type PieceData = {
-  shapes: PieceInterface["matrix"][];
-  color: string;
-};
 
 export default class BackgroundCanvas extends TetrominoCanvas {
-  private TETRIS_PIECES: PieceData[];
   private mouseX: number;
   private mouseY: number;
   private hoverGlowRadius: number;
@@ -25,29 +12,9 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     scale: number = 30,
     rows: number = 10,
     columns: number = 10,
-    hoverGlowRadius: number = 3
+    hoverGlowRadius: number = 2
   ) {
     super(canvas, scale, rows, columns);
-    this.TETRIS_PIECES = [
-      new IPiece(),
-      new OPiece(),
-      new TPiece(),
-      new SPiece(),
-      new ZPiece(),
-      new JPiece(),
-      new LPiece(),
-    ].map((piece: Piece) => {
-      const shapes = [0, 0, 0, 0].map(() => {
-        const matrix = piece.getMatrix();
-        piece.freeRotate(1);
-        return matrix;
-      });
-
-      return {
-        shapes: shapes,
-        color: piece.getColor(),
-      };
-    });
     this.hoverGlowRadius = hoverGlowRadius;
     this.mouseX = -this.hoverGlowRadius * this.scale;
     this.mouseY = -this.hoverGlowRadius * this.scale;
@@ -64,21 +31,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     this.mouseX = (event.clientX - rect.left) * scaleX;
     this.mouseY = (event.clientY - rect.top) * scaleY;
 
-    const tileX = Math.floor(this.mouseX / this.scale);
-    const tileY = Math.floor(this.mouseY / this.scale);
-
-    const startRow = Math.max(0, tileY - this.hoverGlowRadius - 1);
-    const endRow = Math.min(
-      this.matrix.length - 1,
-      tileY + this.hoverGlowRadius + 1
-    );
-    const startCol = Math.max(0, tileX - this.hoverGlowRadius - 1);
-    const endCol = Math.min(
-      this.matrix[0].length - 1,
-      tileX + this.hoverGlowRadius + 1
-    );
-
-    this.draw(startRow, startCol, endRow, endCol);
+    this.draw();
   };
 
   private handleMouseLeave = () => {
@@ -166,12 +119,12 @@ export default class BackgroundCanvas extends TetrominoCanvas {
         if (this.matrix[row]?.[col]?.value === 0) {
           let piecePlaced = false;
           let pieceIndices = Array.from(
-            Array(this.TETRIS_PIECES.length).keys()
+            Array(TetrominoCanvas.TETRIS_PIECES.length).keys()
           );
           pieceIndices = shuffle(pieceIndices);
 
           for (let pieceIndex of pieceIndices) {
-            const piece = this.TETRIS_PIECES[pieceIndex];
+            const piece = TetrominoCanvas.TETRIS_PIECES[pieceIndex];
             let shapeIndices = Array.from(Array(piece.shapes.length).keys());
             shapeIndices = shuffle(shapeIndices);
 
@@ -202,18 +155,18 @@ export default class BackgroundCanvas extends TetrominoCanvas {
   };
 
   private generateGradient = (
-    radius: number,
     color: string,
     startSaturation: number,
     startLightness: number
   ): Map<number, string> => {
+    const radius = this.hoverGlowRadius;
     const gradientMap = new Map<number, string>();
 
     // The 0th distance will always be (1, 1)
-    gradientMap.set(0, mutifyHexColor(color, 1, 1));
+    gradientMap.set(0, color);
 
     // Use an exponential decay function for saturation and lightness decrease
-    const decayRate = 3; // Adjust this rate to control aggressiveness
+    const decayRate = 1.5; // Adjust this rate to control aggressiveness
 
     for (let i = 1; i <= radius; i++) {
       const decayFactor = i / radius;
@@ -236,7 +189,6 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     const distanceInTiles = Math.floor(distanceFromPointer / this.scale);
 
     const distanceColorMap: Map<number, string> = this.generateGradient(
-      this.hoverGlowRadius,
       color,
       0.4,
       0.3

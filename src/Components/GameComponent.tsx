@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Game from "../Game/Game";
+import Game from "../Classes/Game/Game";
 import styles from "./gameComponent.module.css";
 import { areValuesClosePercentage } from "../utils";
+import DoubleBorder from "./UI/DoubleBorder";
+import Box from "./UI/Box";
 
 interface GameComponentPropTypes {
   startingLevel?: number;
@@ -14,6 +16,8 @@ export default function GameComponent({
 }: GameComponentPropTypes) {
   const gameRef = useRef<Game | null>(null);
   const boardRef = useRef(null);
+  const pieceCountRef = useRef(null);
+  const nextPieceRef = useRef(null);
   const [score, setScore] = useState<number>(0);
   const [level, setLevel] = useState<number>(startingLevel);
 
@@ -40,17 +44,19 @@ export default function GameComponent({
   };
 
   const handleResize = () => {
-    gameRef.current?.resizeGameBoard(getGameBoardScale());
+    gameRef.current?.setScale(getGameBoardScale());
   };
 
   const initializeGame = () => {
-    const newGame = new Game(
-      boardRef.current!,
-      level,
-      getGameBoardScale(),
-      setScore,
-      setLevel
-    );
+    const newGame = new Game({
+      boardCanvas: boardRef.current!,
+      startingLevel: level,
+      scale: getGameBoardScale(),
+      onChangeScore: setScore,
+      onChangeLevel: setLevel,
+      nextPieceCanvas: nextPieceRef.current!,
+      pieceCountCanvas: pieceCountRef.current!,
+    });
     newGame.startGame();
     gameRef.current = newGame;
   };
@@ -68,26 +74,28 @@ export default function GameComponent({
   }, []);
 
   return (
-    <div id="gameComponent">
-      <div className={styles.canvasContainer}>
-        <canvas
-          style={{
-            background: "#000000",
-            display: "block",
-          }}
-          ref={boardRef}
-        />
+    <div className={styles.gameComponent}>
+      <div className={styles.leftStats}>
+        <DoubleBorder>
+          <Box className={styles.linesCleared} />
+        </DoubleBorder>
+        <DoubleBorder className={styles.pieceCount}>
+          <canvas ref={pieceCountRef} />
+        </DoubleBorder>
       </div>
-
-      <div id={styles.details}>
-        <p id="scoring">
-          <span>Score: </span>
-          <span id="score">{score}</span>
-        </p>
-        <p id="level">
-          <span>Level:</span>
-          <span id="currentLevel">{level}</span>
-        </p>
+      <DoubleBorder className={styles.gameBoardContainer}>
+        <canvas ref={boardRef} />
+      </DoubleBorder>
+      <div className={styles.rightStats}>
+        <DoubleBorder>
+          <Box className={styles.score} />
+        </DoubleBorder>
+        <DoubleBorder className={styles.nextPiece}>
+          <canvas ref={nextPieceRef} />
+        </DoubleBorder>
+        <DoubleBorder>
+          <Box className={styles.level} />
+        </DoubleBorder>
       </div>
     </div>
   );

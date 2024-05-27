@@ -1,11 +1,11 @@
 import React, { ReactNode, useMemo } from "react";
 import styles from "./heading.module.css";
 import classnames from "classnames";
-import { UiSize } from "../../PropTypes";
+import { UiSize } from "../../Types/UITypes";
 
 type Props = {
   size?: UiSize;
-  children: ReactNode;
+  children: string;
   [key: string]: any;
 };
 
@@ -14,7 +14,7 @@ export default function Heading({ size = "normal", children, ...rest }: Props) {
     switch (size) {
       case "small":
         return {
-          heading: styles.buttonSmall,
+          heading: styles.headingSmall,
         };
       case "large":
         return {

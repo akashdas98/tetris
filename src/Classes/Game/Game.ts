@@ -3,6 +3,17 @@ import { Controls } from "./Controls/Controls";
 import PieceController from "./PieceController/PieceController";
 import Statistics, { StatisticsInterface } from "./Statistics/Statistics";
 
+interface GameInterface {
+  boardCanvas: HTMLCanvasElement;
+  startingLevel: number;
+  scale: number;
+  nextPieceCanvas?: HTMLCanvasElement;
+  pieceCountCanvas?: HTMLCanvasElement;
+  onChangeScore?: StatisticsInterface["scoringCb"];
+  onChangeLevel?: StatisticsInterface["levelCb"];
+  onChangeStats?: StatisticsInterface["cb"];
+}
+
 class Game {
   private pieceController: PieceController;
   private board: Board;
@@ -17,17 +28,19 @@ class Game {
   private accumulatedTime: number;
   private frameRequestHandle: number | null;
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    startingLevel: number = 0,
-    scale: number = 30,
-    onChangeScore?: StatisticsInterface["scoringCb"],
-    onChangeLevel?: StatisticsInterface["levelCb"],
-    onChangeStats?: StatisticsInterface["cb"]
-  ) {
+  constructor({
+    boardCanvas,
+    startingLevel = 0,
+    scale = 30,
+    nextPieceCanvas,
+    pieceCountCanvas,
+    onChangeScore,
+    onChangeLevel,
+    onChangeStats,
+  }: GameInterface) {
     this.lastUpdateTime = window.performance.now();
     this.pieceController = new PieceController();
-    this.board = new Board(canvas, scale);
+    this.board = new Board(boardCanvas, scale);
     this.controls = new Controls({
       game: this,
       board: this.board,
@@ -40,6 +53,9 @@ class Game {
       levelCb: onChangeLevel,
       board: this.board,
       startingLevel,
+      scale,
+      nextPieceCanvas,
+      pieceCountCanvas,
     });
     this.currentSpeed = this.statistics.getLevel().getCurrentSpeed();
     this.isSoftDropping = false;
@@ -52,6 +68,7 @@ class Game {
     this.stopped = false;
     console.log("STARTED");
     this.pieceController.spawn();
+    this.statistics.drawNextPiece(this.pieceController.getNextPiece());
     this.board.drawPiece(this.pieceController.getCurrentPiece());
     this.startDropLoop();
   };

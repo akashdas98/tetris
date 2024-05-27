@@ -1,4 +1,4 @@
-import GameUI, { GameUIInterface } from "../../Classes/GameUI/GameUI";
+import GameUI, { GameUIInterface } from "../../GameUI/GameUI";
 
 export interface ScoringInterface extends GameUIInterface {
   cb?: (score: number) => any;

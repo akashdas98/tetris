@@ -1,6 +1,8 @@
 "use client";
 
 import Button from "../../Components/UI/Buttons/Button";
+import DoubleBorder from "../../Components/UI/DoubleBorder";
+import WithDoubleBorder from "../../Components/UI/DoubleBorder";
 import Heading from "../../Components/UI/Heading";
 import { bidirectionalModulo } from "../../utils";
 import styles from "./levelSelect.module.css";
@@ -70,7 +72,9 @@ export default function LevelSelect() {
 
   return (
     <div className={styles.root}>
-      <Heading className={styles.heading}>Level Select</Heading>
+      <DoubleBorder className={styles.headingContainer}>
+        <Heading>Level Select</Heading>
+      </DoubleBorder>
       <div className={styles.levelSelect}>
         {Array.from({ length: 10 }, (_, i) => (
           <Button

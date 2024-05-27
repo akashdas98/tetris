@@ -1,5 +1,15 @@
-import { mutifyHexColor } from "../../utils";
-import Piece from "../../Game/Piece/Piece";
+import { lightenHexColor, mutifyHexColor } from "../../utils";
+import Piece, { PieceInterface } from "../../Classes/Game/Piece/Piece";
+import theme from "../../theme";
+import TPiece from "../Game/Piece/TPiece";
+import JPiece from "../Game/Piece/JPiece";
+import ZPiece from "../Game/Piece/ZPiece";
+import OPiece from "../Game/Piece/OPiece";
+import SPiece from "../Game/Piece/SPiece";
+import LPiece from "../Game/Piece/LPiece";
+import IPiece from "../Game/Piece/IPiece";
+import pieceDataFactory from "../../factories/pieceDataFactory";
+import { PieceData } from "../../Types/PieceTypes";
 
 export type Tile = { value: number; color: string | null };
 
@@ -11,6 +21,18 @@ export default class TetrominoCanvas {
   protected scale: number;
   protected matrix: CanvasMatrix;
   protected strokeWidthMultiplier: number;
+
+  protected static TETRIS_PIECES: PieceData[] = [
+    new TPiece(),
+    new JPiece(),
+    new ZPiece(),
+    new OPiece(),
+    new SPiece(),
+    new LPiece(),
+    new IPiece(),
+  ].map(pieceDataFactory);
+
+  public static getPieceData = () => [...this.TETRIS_PIECES];
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -26,6 +48,8 @@ export default class TetrominoCanvas {
     this.strokeWidthMultiplier = strokeWidthMultiplier;
     this.canvas.height = rows * this.scale;
     this.canvas.width = columns * this.scale;
+    this.canvas.style.background = theme.color.background;
+    this.canvas.style.display = "block";
     this.canvas.style.padding = `${this.getGap() / 2}px`;
     this.matrix = Array.from({ length: rows }, () =>
       Array.from({ length: columns }, () => ({ value: 0, color: null }))
@@ -50,7 +74,32 @@ export default class TetrominoCanvas {
 
     this.ctx.fillRect(x, y, innerScale, innerScale);
     this.ctx.strokeRect(x, y, innerScale, innerScale);
+
+    const sparkleSizeX = this.scale / 5;
+    const sparkleSizeY = this.scale / 4;
+    const sparkleOffsetX = this.scale / 32; // Adjustable offset from the right edge
+    const sparkleOffsetY = this.scale / 32; // Adjustable offset from the top edge
+
+    this.ctx.fillStyle = lightenHexColor(color, 0.3);
+    this.ctx.fillRect(
+      (column + 1) * this.scale - sparkleSizeX - strokeWidth - sparkleOffsetX,
+      row * this.scale + strokeWidth + sparkleOffsetY,
+      sparkleSizeX,
+      sparkleSizeY
+    );
   }
+
+  public drawPiece = (
+    piece: Piece,
+    position?: [x: number, y: number]
+  ): void => {
+    const { getColor, getMatrix, getPosition } = piece;
+    const color = getColor();
+    position = position || getPosition();
+    getMatrix().forEach((tile) => {
+      this.drawTile(tile[1] + position[1], tile[0] + position[0], color);
+    });
+  };
 
   public draw = (
     startRow: number = 0,

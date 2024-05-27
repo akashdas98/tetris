@@ -1,4 +1,4 @@
-import GameUI, { GameUIInterface } from "../../Classes/GameUI/GameUI";
+import GameUI, { GameUIInterface } from "../../GameUI/GameUI";
 
 export interface LevelInterface extends GameUIInterface {
   cb?: (level: number) => any;
@@ -28,10 +28,7 @@ export default class Level extends GameUI {
   public getCurrentLevel = (): number => this.currentLevel;
 
   public updateLevel = (totalLinesCleared: number): void => {
-    if (
-      totalLinesCleared >= this.linesForNextLevelUp &&
-      this.currentLevel < 29
-    ) {
+    if (totalLinesCleared >= this.linesForNextLevelUp) {
       this.currentLevel++;
       this.linesForNextLevelUp += 10;
       this.onChange?.(this.currentLevel);

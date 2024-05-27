@@ -1,17 +1,18 @@
-import { CanvasMatrix } from "../../Classes/TetrominoCanvas/TetrominoCanvas";
+import { PieceId, PieceMatrix } from "../../../Types/PieceTypes";
+import { CanvasMatrix } from "../../TetrominoCanvas/TetrominoCanvas";
 
 export interface PieceInterface {
-  matrix: number[][];
+  matrix: PieceMatrix;
   position?: [number, number];
-  id: "O" | "I" | "S" | "Z" | "J" | "L" | "T";
+  id: PieceId;
   color: string;
 }
 
 export default abstract class Piece {
-  protected matrix: PieceInterface["matrix"];
+  protected matrix: PieceMatrix;
   protected position: [number, number];
-  protected id: PieceInterface["id"];
-  protected color: PieceInterface["color"];
+  protected id: PieceId;
+  protected color: string;
   protected orientation: 0 | 1 | 2 | 3;
   protected kickData: [number, number][][];
 
@@ -52,6 +53,8 @@ export default abstract class Piece {
       ],
     ];
   }
+
+  public getId = (): PieceId => `${this.id}`;
 
   public getMatrix = (): PieceInterface["matrix"] => {
     return [...this.matrix];

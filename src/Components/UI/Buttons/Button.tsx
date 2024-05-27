@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from "react";
 import styles from "./button.module.css";
 import classnames from "classnames";
-import { UiSize } from "../../../PropTypes";
+import { UiSize } from "../../../Types/UITypes";
 
 export interface ButtonPropTypes {
   size?: UiSize;
