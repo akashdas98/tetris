@@ -7,3 +7,9 @@ export type PieceData = {
   shapes: PieceMatrix[];
   color: string;
 };
+
+export type ShapeData = { shape: PieceMatrix; color: string };
+
+export type Tile = { value: number; color: string | null };
+
+export type CanvasMatrix = Tile[][];

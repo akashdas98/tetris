@@ -9,11 +9,13 @@ import SPiece from "../Game/Piece/SPiece";
 import LPiece from "../Game/Piece/LPiece";
 import IPiece from "../Game/Piece/IPiece";
 import pieceDataFactory from "../../factories/pieceDataFactory";
-import { PieceData } from "../../Types/PieceTypes";
-
-export type Tile = { value: number; color: string | null };
-
-export type CanvasMatrix = Tile[][];
+import {
+  CanvasMatrix,
+  PieceData,
+  PieceMatrix,
+  ShapeData,
+  Tile,
+} from "../../Types/GameTypes";
 
 export default class TetrominoCanvas {
   protected canvas: HTMLCanvasElement;
@@ -22,7 +24,7 @@ export default class TetrominoCanvas {
   protected matrix: CanvasMatrix;
   protected strokeWidthMultiplier: number;
 
-  protected static TETRIS_PIECES: PieceData[] = [
+  private static TETRIS_PIECES: Piece[] = [
     new TPiece(),
     new JPiece(),
     new ZPiece(),
@@ -30,9 +32,14 @@ export default class TetrominoCanvas {
     new SPiece(),
     new LPiece(),
     new IPiece(),
-  ].map(pieceDataFactory);
+  ];
 
-  public static getPieceData = () => [...this.TETRIS_PIECES];
+  private static PIECE_DATA: PieceData[] =
+    this.TETRIS_PIECES.map(pieceDataFactory);
+
+  public static getTetrisPieces = (): Piece[] => [...this.TETRIS_PIECES];
+
+  public static getPieceData = (): PieceData[] => [...this.PIECE_DATA];
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -89,6 +96,35 @@ export default class TetrominoCanvas {
     );
   }
 
+  protected canAddShape = (
+    shape: PieceMatrix,
+    row: number,
+    col: number
+  ): boolean => {
+    for (let i = 0; i < shape.length; i++) {
+      const tile = shape[i];
+      if (
+        !this.matrix[row + tile[1]] ||
+        !this.matrix[row + tile[1]][col + tile[0]] ||
+        this.matrix[row + tile[1]][col + tile[0]].value === 1
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  public addShapeToMatrix = (
+    { shape, color }: ShapeData,
+    row: number,
+    col: number
+  ): void => {
+    for (let i = 0; i < shape.length; i++) {
+      const tile = shape[i];
+      this.addTileToMatrix({ value: 1, color }, row + tile[1], col + tile[0]);
+    }
+  };
+
   public drawPiece = (
     piece: Piece,
     position?: [x: number, y: number]
@@ -97,7 +133,7 @@ export default class TetrominoCanvas {
     const color = getColor();
     position = position || getPosition();
     getMatrix().forEach((tile) => {
-      this.drawTile(tile[1] + position[1], tile[0] + position[0], color);
+      this.drawTile(tile[1] + position![1], tile[0] + position![0], color);
     });
   };
 

@@ -1,4 +1,5 @@
 import { PieceInterface } from "../../Classes/Game/Piece/Piece";
+import { PieceMatrix } from "../../Types/GameTypes";
 import { mutifyHexColor, shuffle } from "../../utils";
 import TetrominoCanvas from "../TetrominoCanvas/TetrominoCanvas";
 
@@ -50,35 +51,6 @@ export default class BackgroundCanvas extends TetrominoCanvas {
     return distance;
   };
 
-  private canPlacePiece = (
-    shape: PieceInterface["matrix"],
-    row: number,
-    col: number
-  ): boolean => {
-    for (let i = 0; i < shape.length; i++) {
-      const tile = shape[i];
-      if (
-        !this.matrix[row + tile[1]] ||
-        !this.matrix[row + tile[1]][col + tile[0]] ||
-        this.matrix[row + tile[1]][col + tile[0]].value === 1
-      ) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  private placePiece = (
-    { shape, color }: { shape: PieceInterface["matrix"]; color: string },
-    row: number,
-    col: number
-  ): void => {
-    for (let i = 0; i < shape.length; i++) {
-      const tile = shape[i];
-      this.addTileToMatrix({ value: 1, color }, row + tile[1], col + tile[0]);
-    }
-  };
-
   private isPieceUsedTooOften = (
     pieceColor: string,
     row: number,
@@ -119,19 +91,19 @@ export default class BackgroundCanvas extends TetrominoCanvas {
         if (this.matrix[row]?.[col]?.value === 0) {
           let piecePlaced = false;
           let pieceIndices = Array.from(
-            Array(TetrominoCanvas.TETRIS_PIECES.length).keys()
+            Array(TetrominoCanvas.getPieceData().length).keys()
           );
           pieceIndices = shuffle(pieceIndices);
 
           for (let pieceIndex of pieceIndices) {
-            const piece = TetrominoCanvas.TETRIS_PIECES[pieceIndex];
+            const piece = TetrominoCanvas.getPieceData()[pieceIndex];
             let shapeIndices = Array.from(Array(piece.shapes.length).keys());
             shapeIndices = shuffle(shapeIndices);
 
             for (let shapeIndex of shapeIndices) {
               const shape = piece.shapes[shapeIndex];
               if (
-                this.canPlacePiece(shape, row, col) &&
+                this.canAddShape(shape, row, col) &&
                 !this.isPieceUsedTooOften(
                   piece.color,
                   row,
@@ -140,7 +112,7 @@ export default class BackgroundCanvas extends TetrominoCanvas {
                   occurance
                 )
               ) {
-                this.placePiece({ shape, color: piece.color }, row, col);
+                this.addShapeToMatrix({ shape, color: piece.color }, row, col);
                 piecePlaced = true;
                 break;
               }

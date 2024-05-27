@@ -1,5 +1,5 @@
 import Piece from "../Classes/Game/Piece/Piece";
-import { PieceData } from "../Types/PieceTypes";
+import { PieceData } from "../Types/GameTypes";
 
 export default (piece: Piece): PieceData => {
   const shapes = [0, 0, 0, 0].map(() => {

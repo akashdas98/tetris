@@ -1,4 +1,4 @@
-import { PieceId, PieceMatrix } from "../../../Types/PieceTypes";
+import { PieceId, PieceMatrix } from "../../../Types/GameTypes";
 import { CanvasMatrix } from "../../TetrominoCanvas/TetrominoCanvas";
 
 export interface PieceInterface {

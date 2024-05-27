@@ -2,11 +2,8 @@ import Piece from "../Piece/Piece";
 import TetrominoCanvas from "../../TetrominoCanvas/TetrominoCanvas";
 
 export default class Board extends TetrominoCanvas {
-  private totalLinesCleared: number;
-
   constructor(canvas: HTMLCanvasElement, scale: number = 30) {
     super(canvas, scale, 20, 10);
-    this.totalLinesCleared = 0;
   }
 
   public clearLine = (): number => {
@@ -37,7 +34,6 @@ export default class Board extends TetrominoCanvas {
 
     if (linesToClear.length > 0) {
       this.draw();
-      this.totalLinesCleared += linesToClear.length;
     }
 
     return linesToClear.length;
@@ -47,14 +43,10 @@ export default class Board extends TetrominoCanvas {
     this.matrix[0].some((cell) => cell.value === 1);
 
   public addToStack = (piece: Piece) => {
-    piece.getMatrix().forEach((tile) => {
-      const position = piece.getPosition();
-      const row = tile[1] + position[1];
-      const col = tile[0] + position[0];
-      this.addTileToMatrix({ value: 1, color: piece.getColor() }, row, col);
-    });
+    const position = piece.getPosition();
+    const shape = piece.getMatrix();
+    const color = piece.getColor();
+    this.addShapeToMatrix({ shape, color }, position[1], position[0]);
     this.draw();
   };
-
-  public getTotalLinesCleared = (): number => this.totalLinesCleared;
 }

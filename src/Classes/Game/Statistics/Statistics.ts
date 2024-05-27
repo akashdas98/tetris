@@ -1,13 +1,11 @@
-import { PieceId } from "../../../Types/PieceTypes";
+import { PieceId } from "../../../Types/GameTypes";
 import GameUI, { GameUIInterface } from "../../GameUI/GameUI";
 import TetrominoCanvas from "../../TetrominoCanvas/TetrominoCanvas";
-import Board from "../Board/Board";
 import Level, { LevelInterface } from "../Level/Level";
 import Piece from "../Piece/Piece";
 import Scoring, { ScoringInterface } from "../Scoring/Scoring";
 
 export interface StatisticsInterface extends GameUIInterface {
-  board: Board;
   startingLevel: number;
   cb?: ({ linesCleared }: { linesCleared: number }) => any;
   scoringCb?: ScoringInterface["cb"];
@@ -22,14 +20,13 @@ export default class Statistics extends GameUI {
   private level: Level;
   private nextPieceCanvas?: TetrominoCanvas;
   private pieceCountCanvas?: TetrominoCanvas;
-  private board: Board;
   private pieceCount: Record<PieceId, number>;
+  private totalLinesCleared: number;
 
   constructor({
     cb,
     scoringCb,
     levelCb,
-    board,
     startingLevel,
     nextPieceCanvas,
     pieceCountCanvas,
@@ -48,9 +45,20 @@ export default class Statistics extends GameUI {
       acc[data.id] = 0;
       return acc;
     }, {} as Record<PieceId, number>);
-    this.board = board;
-    this.onChange?.(this.board.getTotalLinesCleared());
+    this.totalLinesCleared = 0;
+    this.drawPieceCount();
+    this.onChange?.(this.totalLinesCleared);
   }
+
+  public drawPieceCount = () => {
+    const pieces: Piece[] = TetrominoCanvas.getTetrisPieces();
+    for (let i = 0; i < 7; i++) {
+      const piece = pieces[i];
+      const y = 2 + i * 2.5 + (piece.getId() === "I" ? 0 : 0.5);
+      const x = 1;
+      this.pieceCountCanvas?.drawPiece(piece, [x, y]);
+    }
+  };
 
   public getLevel = (): Level => this.level;
 
@@ -58,7 +66,7 @@ export default class Statistics extends GameUI {
 
   public setScale = (scale: number): void => {
     this.nextPieceCanvas?.setScale(scale);
-    this.pieceCountCanvas?.setScale(scale);
+    this.pieceCountCanvas?.setScale(0.75 * scale);
   };
 
   public drawNextPiece = (piece: Piece) => {
@@ -75,5 +83,11 @@ export default class Statistics extends GameUI {
 
   public incrementPieceCount = (id: PieceId) => {
     this.pieceCount[id] = this.pieceCount[id] + 1;
+  };
+
+  public getTotalLinesCleared = (): number => this.totalLinesCleared;
+
+  public incrementTotalLinesCleared = (lines: number): void => {
+    this.totalLinesCleared += lines;
   };
 }

@@ -51,7 +51,6 @@ class Game {
       cb: onChangeStats,
       scoringCb: onChangeScore,
       levelCb: onChangeLevel,
-      board: this.board,
       startingLevel,
       scale,
       nextPieceCanvas,
@@ -159,8 +158,12 @@ class Game {
     console.log("CLEARING LINES");
     const clearedLines = this.board.clearLine();
 
+    this.statistics.incrementTotalLinesCleared(clearedLines);
+    this.statistics.incrementPieceCount(
+      this.pieceController.getCurrentPiece().getId()
+    );
     scoring.addScore(clearedLines, level.getCurrentLevel());
-    level.updateLevel(this.board.getTotalLinesCleared());
+    level.updateLevel(this.statistics.getTotalLinesCleared());
     this.updateCurrentSpeed(level.getCurrentSpeed());
   };
 
