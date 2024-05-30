@@ -7,19 +7,19 @@ export default {
   },
   size: {
     large: {
+      base: "32px",
+      padding: "16px",
+      border: "8px",
+    },
+    medium: {
       base: "24px",
       padding: "12px",
       border: "6px",
     },
-    medium: {
+    small: {
       base: "16px",
       padding: "8px",
       border: "4px",
-    },
-    small: {
-      base: "12px",
-      padding: "6px",
-      border: "2px",
     },
   },
 };

@@ -3,7 +3,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import Game from "../Classes/Game/Game";
 import styles from "./gameComponent.module.css";
-import { areValuesClosePercentage } from "../utils";
 import DoubleBorder from "./UI/DoubleBorder";
 import Box from "./UI/Box";
 import { useSearchParams } from "next/navigation";
@@ -22,6 +21,11 @@ export default function GameComponent() {
   const [score, setScore] = useState<number>(0);
   const [level, setLevel] = useState<number>(startingLevel);
   const [linesCleared, setLinesCleared] = useState<number>(0);
+  const [borderSettings, setBorderSettings] = useState({
+    innerBorderThickness: "2px",
+    outerBorderThickness: "4px",
+    gap: "4px",
+  });
 
   const getGameBoardScale = () => {
     const width = boardRef.current?.parentElement?.clientWidth ?? 300;
@@ -34,24 +38,35 @@ export default function GameComponent() {
   };
 
   const initializeGame = () => {
-    if (boardRef.current && nextPieceRef.current && pieceCountRef.current) {
-      const newGame = new Game({
-        boardCanvas: boardRef.current!,
-        startingLevel: level,
-        scale: getGameBoardScale(),
-        onChangeStats: setLinesCleared,
-        onChangeScore: setScore,
-        onChangeLevel: setLevel,
-        nextPieceCanvas: nextPieceRef.current!,
-        pieceCountCanvas: pieceCountRef.current!,
-      });
-      newGame.startGame();
-      gameRef.current = newGame;
-      handleResize();
-    }
+    const newGame = new Game({
+      boardCanvas: boardRef.current!,
+      startingLevel: level,
+      scale: getGameBoardScale(),
+      onChangeStats: setLinesCleared,
+      onChangeScore: setScore,
+      onChangeLevel: setLevel,
+      nextPieceCanvas: nextPieceRef.current!,
+      pieceCountCanvas: pieceCountRef.current!,
+    });
+    newGame.startGame();
+    gameRef.current = newGame;
+    handleResize();
+  };
+
+  const updateBorders = () => {
+    const isSmallScreen = window.innerWidth <= 600;
+    setBorderSettings({
+      innerBorderThickness: isSmallScreen ? "1px" : "2px",
+      outerBorderThickness: isSmallScreen ? "2px" : "4px",
+      gap: isSmallScreen ? "2px" : "4px",
+    });
   };
 
   useEffect(() => {
+    updateBorders();
+
+    window.addEventListener("resize", updateBorders);
+
     if (!gameRef.current) {
       initializeGame();
     }
@@ -68,54 +83,21 @@ export default function GameComponent() {
     }
 
     return () => {
+      window.removeEventListener("resize", updateBorders);
       if (boardRef.current) {
         resizeObserver.unobserve(boardRef.current);
       }
     };
   }, []);
 
-  const DoubleBorderResponsive = ({
-    children,
-    ...props
-  }: {
-    children: ReactNode;
-    [key: string]: any;
-  }) => {
-    const [borderSettings, setBorderSettings] = useState({
-      innerBorderThickness: "2px",
-      outerBorderThickness: "4px",
-      gap: "4px",
-    });
-
-    useEffect(() => {
-      const updateBorders = () => {
-        const isSmallScreen = window.innerWidth <= 600;
-        setBorderSettings({
-          innerBorderThickness: isSmallScreen ? "1px" : "2px",
-          outerBorderThickness: isSmallScreen ? "2px" : "4px",
-          gap: isSmallScreen ? "2px" : "4px",
-        });
-      };
-
-      updateBorders(); // Initial setting
-      window.addEventListener("resize", updateBorders);
-
-      return () => {
-        window.removeEventListener("resize", updateBorders);
-      };
-    }, []);
-
-    return (
-      <DoubleBorder
-        {...props}
-        innerBorderThickness={borderSettings.innerBorderThickness}
-        outerBorderThickness={borderSettings.outerBorderThickness}
-        gap={borderSettings.gap}
-      >
-        {children}
-      </DoubleBorder>
-    );
-  };
+  const DoubleBorderResponsive = (
+    children: ReactNode,
+    props: Record<string, any>
+  ) => (
+    <DoubleBorder {...borderSettings} {...props}>
+      {children}
+    </DoubleBorder>
+  );
 
   return (
     <div
@@ -124,48 +106,51 @@ export default function GameComponent() {
       style={{ visibility: "hidden" }}
     >
       <div className={styles.leftStats}>
-        <DoubleBorderResponsive className={styles.levelContainer}>
+        {DoubleBorderResponsive(
           <Box className={styles.level}>
             <p style={{ marginBottom: "0.5em" }}>Level</p>
             <p>{level}</p>
-          </Box>
-        </DoubleBorderResponsive>
-        <DoubleBorderResponsive className={styles.linesClearedContainer}>
+          </Box>,
+          { className: styles.levelContainer }
+        )}
+        {DoubleBorderResponsive(
           <Box className={styles.linesCleared}>
             <p style={{ marginBottom: "0.5em" }}>Lines Cleared</p>
-            <p>{level}</p>
-          </Box>
-        </DoubleBorderResponsive>
-        <DoubleBorderResponsive className={styles.pieceCount}>
-          <canvas ref={pieceCountRef} />
-        </DoubleBorderResponsive>
+            <p>{linesCleared}</p>
+          </Box>,
+          { className: styles.linesClearedContainer }
+        )}
+        {DoubleBorderResponsive(<canvas ref={pieceCountRef} />, {
+          className: styles.pieceCount,
+        })}
       </div>
 
-      <DoubleBorderResponsive className={styles.gameBoardContainer}>
-        <canvas ref={boardRef} style={{ width: "100%", height: "100%" }} />
-      </DoubleBorderResponsive>
+      {DoubleBorderResponsive(
+        <canvas ref={boardRef} style={{ width: "100%", height: "100%" }} />,
+        { className: styles.gameBoardContainer }
+      )}
 
       <div className={styles.rightStats}>
-        <DoubleBorderResponsive className={styles.scoreContainer}>
+        {DoubleBorderResponsive(
           <Box className={styles.score}>
             <p style={{ marginBottom: "0.5em" }}>Score</p>
             <p style={{ marginBottom: "0.5em" }}>{score}</p>
             <p style={{ marginBottom: "0.5em" }}>Highscore</p>
             <p>{score}</p>
-          </Box>
-        </DoubleBorderResponsive>
-        <DoubleBorderResponsive
-          className={styles.nextPieceContainer}
-          innerProps={{ className: styles.nextPieceContainerInner }}
-        >
-          <canvas ref={nextPieceRef} />
-        </DoubleBorderResponsive>
-        <DoubleBorderResponsive className={styles.levelContainer}>
+          </Box>,
+          { className: styles.scoreContainer }
+        )}
+        {DoubleBorderResponsive(<canvas ref={nextPieceRef} />, {
+          className: styles.nextPieceContainer,
+          innerProps: { className: styles.nextPieceContainerInner },
+        })}
+        {DoubleBorderResponsive(
           <Box className={styles.level}>
             <p style={{ marginBottom: "0.5em" }}>Level</p>
             <p>{level}</p>
-          </Box>
-        </DoubleBorderResponsive>
+          </Box>,
+          { className: styles.levelContainer }
+        )}
       </div>
     </div>
   );

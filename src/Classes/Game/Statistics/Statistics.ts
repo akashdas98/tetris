@@ -38,14 +38,14 @@ export default class Statistics extends GameUI {
     this.nextPieceCanvas = nextPieceCanvas
       ? new TetrominoCanvas({
           canvas: nextPieceCanvas,
-          scale: scale * 0.75,
+          scale: Math.floor(0.75 * scale),
           rows: 4,
           columns: 5,
         })
       : undefined;
     this.pieceCount = new PieceCount({
       canvas: pieceCountCanvas,
-      scale: 0.6 * scale,
+      scale: Math.floor(0.7 * scale),
     });
     this.totalLinesCleared = 0;
     this.onChange?.(this.totalLinesCleared);
@@ -58,8 +58,8 @@ export default class Statistics extends GameUI {
   public getPieceCount = (): PieceCount => this.pieceCount;
 
   public setScale = (scale: number): void => {
-    this.nextPieceCanvas?.setScale(0.75 * scale);
-    this.pieceCount?.setCanvasScale(0.6 * scale);
+    this.nextPieceCanvas?.setScale(Math.floor(0.75 * scale));
+    this.pieceCount?.setCanvasScale(Math.floor(0.7 * scale));
   };
 
   public drawNextPiece = (piece: Piece) => {
@@ -86,5 +86,6 @@ export default class Statistics extends GameUI {
 
   public incrementTotalLinesCleared = (lines: number): void => {
     this.totalLinesCleared += lines;
+    this.onChange?.(this.totalLinesCleared);
   };
 }

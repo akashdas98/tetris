@@ -83,6 +83,7 @@ export default function RetroButton({
           color: "#ffffff",
           ...rest?.style,
         }}
+        size={size}
       />
       <div
         className={classNames.horizontalBorder}

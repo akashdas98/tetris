@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import styles from "./button.module.css";
 import classnames from "classnames";
 import { UiSize } from "../../../Types/UITypes";
@@ -56,6 +56,8 @@ export default function Button({
         };
     }
   }, [size]);
+
+  useEffect(() => console.log(size));
 
   return (
     <button

@@ -2,7 +2,6 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  font-size: var(--size-large-base);
 }
 
 .leftStats,
@@ -28,7 +27,7 @@
 
 .score {
   word-wrap: break-word;
-  padding: var(--size-medium-padding);
+  padding: var(--size-large-padding);
   height: 100%;
 }
 
@@ -43,14 +42,14 @@
 
 .level {
   word-wrap: break-word;
-  padding: var(--size-medium-padding);
+  padding: var(--size-large-padding);
   height: 100%;
 }
 
 .linesCleared {
   word-wrap: break-word;
   height: 100%;
-  padding: var(--size-medium-padding);
+  padding: var(--size-large-padding);
 }
 
 .leftStats > .levelContainer {
@@ -62,8 +61,17 @@
 }
 
 @media screen and (orientation: landscape) {
+  .gameComponent {
+    font-size: 2vh;
+  }
   .gameBoardContainer {
     width: 40vh;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .gameComponent {
+    font-size: 1.8vh;
   }
 }
 
@@ -83,13 +91,13 @@
     display: none;
   }
   .gameBoardContainer {
-    width: 75vw;
-    max-width: 35vh;
+    width: 80vw;
+    max-width: 30vh;
   }
   .leftStats,
   .rightStats {
-    width: calc(75vw);
-    max-width: calc(35vh);
+    width: calc(80vw);
+    max-width: calc(30vh);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -103,7 +111,7 @@
     display: block;
   }
   .scoreContainer {
-    width: 55%;
+    width: 58%;
   }
   .nextPieceContainer {
     margin-top: 0;
@@ -121,9 +129,17 @@
   }
 }
 
+@media screen and (min-aspect-ratio: 1/1) {
+  .gameBoardContainer {
+    width: 40vh;
+  }
+}
+
 @media screen and (max-width: 1200px) {
-  .gameComponent {
-    font-size: var(--size-medium-base);
+  .leftStats,
+  .rightStats {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
   }
   .score {
     padding: var(--size-medium-padding);
@@ -137,9 +153,6 @@
 }
 
 @media screen and (max-width: 600px) {
-  .gameComponent {
-    font-size: var(--size-small-base);
-  }
   .score {
     padding: var(--size-small-padding);
   }
@@ -148,5 +161,29 @@
   }
   .linesCleared {
     padding: var(--size-small-padding);
+  }
+}
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  .gameComponent {
+    font-size: 3.5vw;
+  }
+}
+
+@media screen and (max-width: 600px) and (orientation: landscape) {
+  .gameComponent {
+    font-size: 2.5vh;
+  }
+}
+
+@media screen and (max-width: 400px) and (orientation: portrait) {
+  .gameComponent {
+    font-size: 3.2vw;
+  }
+}
+
+@media screen and (max-width: 400px) and (orientation: landscape) {
+  .gameComponent {
+    font-size: 2.2vh;
   }
 }

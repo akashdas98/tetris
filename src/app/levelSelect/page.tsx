@@ -2,8 +2,8 @@
 
 import Button from "../../Components/UI/Buttons/Button";
 import DoubleBorder from "../../Components/UI/DoubleBorder";
-import WithDoubleBorder from "../../Components/UI/DoubleBorder";
 import Heading from "../../Components/UI/Heading";
+import { UiSize } from "../../Types/UITypes";
 import { bidirectionalModulo } from "../../utils";
 import styles from "./levelSelect.module.css";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 export default function LevelSelect() {
   const router = useRouter();
   const [selectionIndex, setSelectionIndex] = useState<number | null>(null);
+  const [uiSize, setUiSize] = useState<UiSize>("small");
   const numLevels = 10;
   const numColumns = 5;
 
@@ -57,6 +58,16 @@ export default function LevelSelect() {
     setSelectionIndex(index);
   };
 
+  const handleResize = () => {
+    const size =
+      window.innerWidth > 2000
+        ? "large"
+        : window.innerWidth > 600
+        ? "medium"
+        : "small";
+    setUiSize(size);
+  };
+
   const goToLevelSelect = (level: number) => {
     const query = { startingLevel: level.toString() };
     const queryString = new URLSearchParams(query).toString();
@@ -69,6 +80,15 @@ export default function LevelSelect() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectionIndex]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className={styles.root}>
@@ -84,6 +104,7 @@ export default function LevelSelect() {
             className={styles.levelButton}
             selectClassName={styles.selectedLevelButton}
             selected={i === selectionIndex}
+            size={uiSize}
           >
             {i.toString()}
           </Button>

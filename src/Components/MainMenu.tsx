@@ -6,10 +6,12 @@ import RetroButton from "./UI/Buttons/RetroButton";
 import { useEffect, useState } from "react";
 import { bidirectionalModulo } from "../utils";
 import theme from "../theme";
+import { UiSize } from "../Types/UITypes";
 
 export default function MainMenu() {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [uiSize, setUiSize] = useState<UiSize>("small");
 
   const goToLevelSelect = (): void => {
     router.push("/levelSelect");
@@ -54,12 +56,31 @@ export default function MainMenu() {
     }
   };
 
+  const handleResize = () => {
+    const size =
+      window.innerWidth > 2000
+        ? "large"
+        : window.innerWidth > 600
+        ? "medium"
+        : "small";
+    setUiSize(size);
+  };
+
   const handleHover = (index: number): void => setSelectedIndex(index);
 
   useEffect(() => {
     window.addEventListener("keydown", handleInput);
     return () => window.removeEventListener("keydown", handleInput);
   }, [selectedIndex]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className={styles.root}>
@@ -74,6 +95,7 @@ export default function MainMenu() {
             },
           }}
           onMouseEnter={() => handleHover(i)}
+          size={uiSize}
         >
           {button.content}
         </RetroButton>
