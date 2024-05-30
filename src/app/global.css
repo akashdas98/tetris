@@ -20,9 +20,14 @@ body,
 
 body {
   font-family: "Pixel Emulator", sans-serif;
+  color: var(--color-base);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+canvas {
+  display: block;
 }

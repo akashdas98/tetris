@@ -6,16 +6,16 @@
 }
 
 .heading {
-  font-size: var(--size-normal-base);
+  font-size: var(--size-medium-base);
   padding: var(--size-small-base);
 }
 
 .headingSmall {
   font-size: var(--size-small-base);
-  padding: var(--size-normal-padding);
+  padding: var(--size-medium-padding);
 }
 
 .headingLarge {
   font-size: var(--size-large-base);
-  padding: var(--size-normal-base);
+  padding: var(--size-medium-base);
 }

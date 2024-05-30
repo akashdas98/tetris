@@ -1,5 +1,5 @@
 import { DocumentContext } from "next/document";
-import Background from "../Components/BackgroundComponent";
+import Background from "../Components/Background/BackgroundComponent";
 import "./global.css";
 import { getCssVars } from "../utils";
 import theme from "../theme";

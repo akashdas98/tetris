@@ -1,9 +1,11 @@
 import Piece from "../Piece/Piece";
-import TetrominoCanvas from "../../TetrominoCanvas/TetrominoCanvas";
+import TetrominoCanvas, {
+  TetrominoCanvasInterface,
+} from "../../TetrominoCanvas/TetrominoCanvas";
 
 export default class Board extends TetrominoCanvas {
-  constructor(canvas: HTMLCanvasElement, scale: number = 30) {
-    super(canvas, scale, 20, 10);
+  constructor({ canvas, scale }: TetrominoCanvasInterface) {
+    super({ canvas, scale, rows: 20, columns: 10 });
   }
 
   public clearLine = (): number => {

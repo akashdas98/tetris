@@ -13,3 +13,5 @@ export type ShapeData = { shape: PieceMatrix; color: string };
 export type Tile = { value: number; color: string | null };
 
 export type CanvasMatrix = Tile[][];
+
+export type PieceCountMap = Record<PieceId, number>;

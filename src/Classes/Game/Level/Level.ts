@@ -1,4 +1,4 @@
-import GameUI, { GameUIInterface } from "../../GameUI/GameUI";
+import GameUI, { GameUIInterface } from "../GameUI/GameUI";
 
 export interface LevelInterface extends GameUIInterface {
   cb?: (level: number) => any;

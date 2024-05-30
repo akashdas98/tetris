@@ -6,17 +6,20 @@ export default {
     base: "#ffffff",
   },
   size: {
-    normal: {
+    large: {
       base: "24px",
       padding: "12px",
+      border: "6px",
     },
-    small: {
+    medium: {
       base: "16px",
       padding: "8px",
+      border: "4px",
     },
-    large: {
-      base: "32px",
-      padding: "16px",
+    small: {
+      base: "12px",
+      padding: "6px",
+      border: "2px",
     },
   },
 };

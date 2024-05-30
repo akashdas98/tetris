@@ -1,1 +1,1 @@
-export type UiSize = "normal" | "small" | "large";
+export type UiSize = "medium" | "small" | "large";

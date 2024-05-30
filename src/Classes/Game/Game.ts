@@ -40,7 +40,7 @@ class Game {
   }: GameInterface) {
     this.lastUpdateTime = window.performance.now();
     this.pieceController = new PieceController();
-    this.board = new Board(boardCanvas, scale);
+    this.board = new Board({ canvas: boardCanvas, scale });
     this.controls = new Controls({
       game: this,
       board: this.board,
@@ -67,6 +67,9 @@ class Game {
     this.stopped = false;
     console.log("STARTED");
     this.pieceController.spawn();
+    this.statistics
+      .getPieceCount()
+      .incrementPieceCount(this.pieceController.getCurrentPiece().getId());
     this.statistics.drawNextPiece(this.pieceController.getNextPiece());
     this.board.drawPiece(this.pieceController.getCurrentPiece());
     this.startDropLoop();
@@ -75,6 +78,13 @@ class Game {
   public setScale = (scale: number = 30) => {
     this.board.setScale(scale);
     this.statistics.setScale(scale);
+    this.redrawGameBoard();
+    this.redrawStats();
+  };
+
+  public redrawStats = () => {
+    this.statistics.drawNextPiece(this.pieceController.getNextPiece());
+    this.statistics.getPieceCount().redraw();
   };
 
   public redrawGameBoard = () => {
@@ -159,9 +169,6 @@ class Game {
     const clearedLines = this.board.clearLine();
 
     this.statistics.incrementTotalLinesCleared(clearedLines);
-    this.statistics.incrementPieceCount(
-      this.pieceController.getCurrentPiece().getId()
-    );
     scoring.addScore(clearedLines, level.getCurrentLevel());
     level.updateLevel(this.statistics.getTotalLinesCleared());
     this.updateCurrentSpeed(level.getCurrentSpeed());

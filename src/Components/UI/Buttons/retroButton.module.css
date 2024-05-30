@@ -9,7 +9,7 @@
 }
 
 .root {
-  padding: var(--size-normal-padding);
+  padding: var(--size-medium-padding);
 }
 
 .rootSmall {
@@ -30,15 +30,15 @@
 }
 
 .button {
-  padding: var(--size-normal-padding) var(--size-normal-base) !important;
+  padding: var(--size-medium-padding) var(--size-medium-base) !important;
 }
 
 .buttonSmall {
-  padding: var(--size-normal-padding) var(--size-normal-base) !important;
+  padding: var(--size-medium-padding) var(--size-medium-base) !important;
 }
 
 .buttonLarge {
-  padding: var(--size-normal-padding) var(--size-normal-base) !important;
+  padding: var(--size-medium-padding) var(--size-medium-base) !important;
 }
 
 .horizontalBorder,
@@ -52,7 +52,7 @@
 
 .horizontalBorder {
   height: 100%;
-  width: calc(100% - var(--size-normal-base));
+  width: calc(100% - var(--size-medium-base));
 }
 
 .horizontalBorderSmall {
@@ -66,7 +66,7 @@
 }
 
 .verticalBorder {
-  height: calc(100% - var(--size-normal-base));
+  height: calc(100% - var(--size-medium-base));
   width: 100%;
 }
 

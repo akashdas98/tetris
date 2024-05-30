@@ -8,8 +8,8 @@
 }
 
 .button {
-  font-size: var(--size-normal-base);
-  padding: var(--size-normal-padding);
+  font-size: var(--size-medium-base);
+  padding: var(--size-medium-padding);
 }
 
 .buttonSmall {
@@ -23,11 +23,11 @@
 }
 
 .iconLeft {
-  margin-right: var(--size-normal-padding);
+  margin-right: var(--size-medium-padding);
 }
 
 .iconRight {
-  margin-left: var(--size-normal-padding);
+  margin-left: var(--size-medium-padding);
 }
 
 .iconLeftSmall {

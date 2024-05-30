@@ -20,7 +20,7 @@ export interface ButtonPropTypes {
 }
 
 export default function Button({
-  size = "normal",
+  size = "medium",
   iconLeft,
   iconRight,
   iconLeftProps = {},

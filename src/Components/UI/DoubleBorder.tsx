@@ -9,6 +9,7 @@ interface Props {
   innerBorderThickness?: string;
   outerBorderThickness?: string;
   gap?: string;
+  innerProps?: Record<string, any>;
   [key: string]: any;
 }
 
@@ -20,9 +21,10 @@ export default ({
   innerBorderThickness = "2px",
   outerBorderThickness = "4px",
   gap = "4px",
+  innerProps,
   ...props
 }: Props) => {
-  const margin = `calc((${innerBorderThickness} + ${gap} + ${outerBorderThickness})*2) calc(${innerBorderThickness} + ${gap} + ${outerBorderThickness})`;
+  const margin = `calc((${innerBorderThickness} + ${gap} + ${outerBorderThickness})) calc(${innerBorderThickness} + ${gap} + ${outerBorderThickness})`;
 
   const style: CSSProperties = {
     boxShadow: `
@@ -30,11 +32,15 @@ export default ({
       0 0 0 calc(${innerBorderThickness} + ${gap}) ${backgroundColor}, 
       0 0 0 calc(${innerBorderThickness} + ${gap} + ${outerBorderThickness}) ${outerBorderColor}`,
     margin,
+    width: `calc(100% - ((${innerBorderThickness} + ${gap} + ${outerBorderThickness}) * 2))`,
+    height: `calc(100% - ((${innerBorderThickness} + ${gap} + ${outerBorderThickness}) * 2))`,
   };
 
   return (
     <div {...props}>
-      <div style={style}>{children}</div>
+      <div {...innerProps} style={style}>
+        {children}
+      </div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ type Props = {
   [key: string]: any;
 };
 
-export default function Heading({ size = "normal", children, ...rest }: Props) {
+export default function Heading({ size = "medium", children, ...rest }: Props) {
   const classNames = useMemo(() => {
     switch (size) {
       case "small":

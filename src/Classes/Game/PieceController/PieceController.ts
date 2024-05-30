@@ -1,5 +1,6 @@
-import { CanvasMatrix } from "../../TetrominoCanvas/TetrominoCanvas";
+import { CanvasMatrix } from "../../../Types/GameTypes";
 import { shuffle } from "../../../utils";
+import TetrominoCanvas from "../../TetrominoCanvas/TetrominoCanvas";
 import IPiece from "../Piece/IPiece";
 import JPiece from "../Piece/JPiece";
 import LPiece from "../Piece/LPiece";
@@ -12,10 +13,8 @@ import ZPiece from "../Piece/ZPiece";
 export default class PieceController {
   private currentPiece: Piece;
   private nextPiece: Piece;
-  private bag: Piece[];
 
   constructor() {
-    this.bag = [];
     this.nextPiece = this.generateRandomPiece();
     this.currentPiece = this.nextPiece;
   }
@@ -70,8 +69,8 @@ export default class PieceController {
     this.currentPiece.setPosition(position[0], position[1] + 1);
   };
 
-  private generateBag = (): Piece[] => {
-    const bag: Piece[] = [
+  private generateRandomPiece = (): Piece => {
+    const pieces = [
       new IPiece(),
       new OPiece(),
       new TPiece(),
@@ -80,15 +79,14 @@ export default class PieceController {
       new JPiece(),
       new LPiece(),
     ];
-    return shuffle(bag);
-  };
-
-  private generateRandomPiece = (): Piece => {
-    if (this.bag.length === 0) {
-      this.bag = this.generateBag();
-    }
-    const nextPiece = this.bag.pop() as Piece;
-    return nextPiece;
+    let randomPiece: Piece;
+    do {
+      randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+    } while (
+      randomPiece.getId() === this.currentPiece?.getId() &&
+      Math.random() < 0.3
+    );
+    return randomPiece;
   };
 
   private isPositionValid = (

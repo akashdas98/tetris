@@ -2,6 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  font-size: var(--size-large-base);
 }
 
 .leftStats,
@@ -10,11 +11,142 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 1.5em;
+}
+
+.leftStats {
+  align-items: flex-end;
+}
+
+.rightStats {
+  align-items: flex-start;
 }
 
 .pieceCount {
   margin-top: auto;
 }
 
+.score {
+  word-wrap: break-word;
+  padding: var(--size-medium-padding);
+  height: 100%;
+}
+
+.nextPieceContainer {
+  margin-top: 1em;
+  background-color: var(--color-background);
+}
+
+.levelContainer {
+  margin-top: 1em;
+}
+
+.level {
+  word-wrap: break-word;
+  padding: var(--size-medium-padding);
+  height: 100%;
+}
+
+.linesCleared {
+  word-wrap: break-word;
+  height: 100%;
+  padding: var(--size-medium-padding);
+}
+
+.leftStats > .levelContainer {
+  display: none;
+}
+
 .gameBoardContainer {
+  aspect-ratio: 10/20;
+}
+
+@media screen and (orientation: landscape) {
+  .gameBoardContainer {
+    width: 40vh;
+  }
+}
+
+@media screen and (orientation: landscape) and (max-width: 1200px) {
+  .gameBoardContainer {
+    width: 45vh;
+  }
+}
+
+@media screen and (orientation: portrait) and (max-aspect-ratio: 2.99/4) {
+  .gameComponent {
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .pieceCount {
+    display: none;
+  }
+  .gameBoardContainer {
+    width: 75vw;
+    max-width: 35vh;
+  }
+  .leftStats,
+  .rightStats {
+    width: calc(75vw);
+    max-width: calc(35vh);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    margin: 0.5em 0;
+  }
+  .rightStats > .levelContainer {
+    display: none;
+  }
+  .leftStats > .levelContainer {
+    display: block;
+  }
+  .scoreContainer {
+    width: 55%;
+  }
+  .nextPieceContainer {
+    margin-top: 0;
+  }
+  .nextPieceContainerInner {
+    display: flex;
+    align-items: center;
+  }
+  .levelContainer {
+    margin-top: 0;
+    width: 35%;
+  }
+  .linesClearedContainer {
+    width: 63%;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .gameComponent {
+    font-size: var(--size-medium-base);
+  }
+  .score {
+    padding: var(--size-medium-padding);
+  }
+  .level {
+    padding: var(--size-medium-padding);
+  }
+  .linesCleared {
+    padding: var(--size-medium-padding);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .gameComponent {
+    font-size: var(--size-small-base);
+  }
+  .score {
+    padding: var(--size-small-padding);
+  }
+  .level {
+    padding: var(--size-small-padding);
+  }
+  .linesCleared {
+    padding: var(--size-small-padding);
+  }
 }

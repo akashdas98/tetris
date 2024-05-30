@@ -70,7 +70,7 @@ export default function MainMenu() {
           key={i}
           rootProps={{
             style: {
-              margin: theme.size.normal.base,
+              margin: theme.size.medium.base,
             },
           }}
           onMouseEnter={() => handleHover(i)}
