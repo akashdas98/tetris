@@ -1,3 +1,4 @@
+import TetrominoCanvas from "../TetrominoCanvas/TetrominoCanvas";
 import Board from "./Board/Board";
 import { Controls } from "./Controls/Controls";
 import PieceController from "./PieceController/PieceController";
@@ -78,6 +79,30 @@ class Game {
   public setScale = (scale: number = 30) => {
     this.board.setScale(scale);
     this.statistics.setScale(scale);
+    this.redrawGameBoard();
+    this.redrawStats();
+  };
+
+  public updateCanvases = ({
+    boardCanvas,
+    nextPieceCanvas,
+    pieceCountCanvas,
+  }: {
+    [key: string]: HTMLCanvasElement;
+  }) => {
+    if (boardCanvas) {
+      this.board.updateCanvas(boardCanvas);
+    }
+    if (nextPieceCanvas) {
+      this.statistics.getNextPieceCanvas()?.updateCanvas(nextPieceCanvas);
+    }
+    if (pieceCountCanvas) {
+      this.statistics
+        .getPieceCount()
+        .getPieceCountCanvas()
+        ?.updateCanvas(pieceCountCanvas);
+    }
+
     this.redrawGameBoard();
     this.redrawStats();
   };

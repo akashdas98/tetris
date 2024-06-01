@@ -41,4 +41,6 @@ export default class PieceCount extends GameUI {
   public setCanvasScale = (scale: number) => {
     this.canvas?.setScale(scale);
   };
+
+  public getPieceCountCanvas = (): PieceCountCanvas | undefined => this.canvas;
 }

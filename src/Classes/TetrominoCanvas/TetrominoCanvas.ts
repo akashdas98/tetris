@@ -52,25 +52,31 @@ export default class TetrominoCanvas {
     columns = 10,
     strokeWidthMultiplier = 1 / 6,
   }: TetrominoCanvasInterface) {
+    this.scale = scale;
+    this.strokeWidthMultiplier = strokeWidthMultiplier;
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.scale = Math.floor(scale);
-    this.strokeWidthMultiplier = strokeWidthMultiplier;
-    this.canvas.height = rows * this.scale;
-    this.canvas.width = columns * this.scale;
-    this.canvas.style.background = theme.color.background;
-    this.canvas.style.display = "block";
-    this.canvas.style.padding = `${this.getGap() / 2}px`;
     this.matrix = Array.from({ length: rows }, () =>
       Array.from({ length: columns }, () => ({ value: 0, color: null }))
     );
     this.drawTile.bind(this);
     this.setScale.bind(this);
+    this.updateCanvas(canvas);
   }
 
   public static getTetrisPieces = (): Piece[] => [...this.TETRIS_PIECES];
 
   public static getPieceData = (): PieceData[] => [...this.PIECE_DATA];
+
+  public updateCanvas = (canvas: HTMLCanvasElement): void => {
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.canvas.height = this.matrix.length * this.scale;
+    this.canvas.width = this.matrix[0].length * this.scale;
+    this.canvas.style.background = theme.color.background;
+    this.canvas.style.display = "block";
+    this.canvas.style.padding = `${this.getGap() / 2}px`;
+  };
 
   public addShapeToMatrix = (
     { shape, color }: ShapeData,

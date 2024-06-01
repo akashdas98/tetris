@@ -2,6 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  font-size: 2vh;
 }
 
 .leftStats,
@@ -52,138 +53,29 @@
   padding: var(--size-large-padding);
 }
 
-.leftStats > .levelContainer {
-  display: none;
-}
-
 .gameBoardContainer {
   aspect-ratio: 10/20;
+  width: 40vh;
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (max-aspect-ratio: 2.99/4) {
   .gameComponent {
-    font-size: 2vh;
-  }
-  .gameBoardContainer {
-    width: 40vh;
-  }
-}
-
-@media screen and (orientation: portrait) {
-  .gameComponent {
-    font-size: 1.8vh;
-  }
-}
-
-@media screen and (orientation: landscape) and (max-width: 1200px) {
-  .gameBoardContainer {
-    width: 45vh;
-  }
-}
-
-@media screen and (orientation: portrait) and (max-aspect-ratio: 2.99/4) {
-  .gameComponent {
-    flex-direction: column-reverse;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .pieceCount {
-    display: none;
-  }
-  .gameBoardContainer {
-    width: 80vw;
-    max-width: 30vh;
-  }
-  .leftStats,
-  .rightStats {
-    width: calc(80vw);
-    max-width: calc(30vh);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: stretch;
-    margin: 0.5em 0;
-  }
-  .rightStats > .levelContainer {
-    display: none;
-  }
-  .leftStats > .levelContainer {
-    display: block;
-  }
-  .scoreContainer {
-    width: 58%;
-  }
-  .nextPieceContainer {
-    margin-top: 0;
-  }
-  .nextPieceContainerInner {
-    display: flex;
-    align-items: center;
-  }
-  .levelContainer {
-    margin-top: 0;
-    width: 35%;
-  }
-  .linesClearedContainer {
-    width: 63%;
-  }
-}
-
-@media screen and (min-aspect-ratio: 1/1) {
-  .gameBoardContainer {
-    width: 40vh;
+    font-size: 2vw;
   }
 }
 
 @media screen and (max-width: 1200px) {
   .leftStats,
   .rightStats {
-    margin-right: 0.5em;
-    margin-left: 0.5em;
+    margin: 0 1em;
   }
-  .score {
-    padding: var(--size-medium-padding);
-  }
-  .level {
-    padding: var(--size-medium-padding);
-  }
-  .linesCleared {
-    padding: var(--size-medium-padding);
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .score {
-    padding: var(--size-small-padding);
-  }
-  .level {
-    padding: var(--size-small-padding);
-  }
-  .linesCleared {
-    padding: var(--size-small-padding);
-  }
-}
-
-@media screen and (max-width: 600px) and (orientation: portrait) {
-  .gameComponent {
-    font-size: 3.5vw;
-  }
-}
-
-@media screen and (max-width: 600px) and (orientation: landscape) {
-  .gameComponent {
-    font-size: 2.5vh;
-  }
-}
-
-@media screen and (max-width: 400px) and (orientation: portrait) {
-  .gameComponent {
-    font-size: 3.2vw;
-  }
-}
-
-@media screen and (max-width: 400px) and (orientation: landscape) {
   .gameComponent {
     font-size: 2.2vh;
+  }
+}
+
+@media screen and (max-width: 1200px) and (max-aspect-ratio: 2.99/4) {
+  .gameComponent {
+    font-size: 2.2vw;
   }
 }

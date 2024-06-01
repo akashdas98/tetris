@@ -11,8 +11,8 @@ export default function GameComponent() {
   const gameRef = useRef<Game | null>(null);
   const boardRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const pieceCountRef = useRef(null);
-  const nextPieceRef = useRef(null);
+  const pieceCountRef = useRef<HTMLCanvasElement>(null);
+  const nextPieceRef = useRef<HTMLCanvasElement>(null);
   const searchParams = useSearchParams();
   const startingLevelParam = Number(searchParams.get("startingLevel"));
   const startingLevel: number = isNaN(startingLevelParam)
@@ -21,36 +21,45 @@ export default function GameComponent() {
   const [score, setScore] = useState<number>(0);
   const [level, setLevel] = useState<number>(startingLevel);
   const [linesCleared, setLinesCleared] = useState<number>(0);
+  const [orientation, setOrientation] = useState<"landscape" | "portrait">(
+    "landscape"
+  );
   const [borderSettings, setBorderSettings] = useState({
     innerBorderThickness: "2px",
     outerBorderThickness: "4px",
     gap: "4px",
   });
+  const [scale, setScale] = useState<number>(0);
 
   const getGameBoardScale = () => {
     const width = boardRef.current?.parentElement?.clientWidth ?? 300;
-    const scale = Math.floor(width / 10);
+    const scale = width / 10;
     return scale;
   };
 
-  const handleResize = () => {
-    gameRef.current?.setScale(getGameBoardScale());
+  const handleGameBoardResize = () => {
+    const newScale = getGameBoardScale();
+    if (Math.abs(newScale - scale) >= 1) {
+      setScale(newScale);
+    }
   };
 
   const initializeGame = () => {
-    const newGame = new Game({
-      boardCanvas: boardRef.current!,
-      startingLevel: level,
-      scale: getGameBoardScale(),
-      onChangeStats: setLinesCleared,
-      onChangeScore: setScore,
-      onChangeLevel: setLevel,
-      nextPieceCanvas: nextPieceRef.current!,
-      pieceCountCanvas: pieceCountRef.current!,
-    });
-    newGame.startGame();
-    gameRef.current = newGame;
-    handleResize();
+    if (boardRef.current && nextPieceRef.current && pieceCountRef.current) {
+      const newGame = new Game({
+        boardCanvas: boardRef.current,
+        startingLevel: level,
+        scale: getGameBoardScale(),
+        onChangeStats: setLinesCleared,
+        onChangeScore: setScore,
+        onChangeLevel: setLevel,
+        nextPieceCanvas: nextPieceRef.current,
+        pieceCountCanvas: pieceCountRef.current,
+      });
+      newGame.startGame();
+      gameRef.current = newGame;
+      handleGameBoardResize();
+    }
   };
 
   const updateBorders = () => {
@@ -62,33 +71,62 @@ export default function GameComponent() {
     });
   };
 
-  useEffect(() => {
+  const updateUi = () => {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    const isPortrait = windowWidth / windowHeight <= 2.99 / 4;
+
+    setOrientation(isPortrait ? "portrait" : "landscape");
+  };
+
+  const handleWindowResize = () => {
     updateBorders();
+    updateUi();
+  };
 
-    window.addEventListener("resize", updateBorders);
+  useEffect(() => {
+    handleWindowResize();
 
-    if (!gameRef.current) {
-      initializeGame();
-    }
+    window.addEventListener("resize", handleWindowResize);
 
     const resizeObserver = new ResizeObserver(() => {
-      handleResize();
-      if (containerRef.current?.style.visibility === "hidden") {
-        containerRef.current.style.visibility = "visible";
-      }
+      handleGameBoardResize();
     });
 
     if (boardRef.current) {
       resizeObserver.observe(boardRef.current);
     }
 
+    if (!gameRef.current) {
+      initializeGame();
+    } else {
+      gameRef.current.updateCanvases({
+        boardCanvas: boardRef.current!,
+        nextPieceCanvas: nextPieceRef.current!,
+        pieceCountCanvas: pieceCountRef.current!,
+      });
+    }
+
     return () => {
-      window.removeEventListener("resize", updateBorders);
+      window.removeEventListener("resize", handleWindowResize);
       if (boardRef.current) {
         resizeObserver.unobserve(boardRef.current);
       }
     };
-  }, []);
+  }, [orientation, scale]);
+
+  useEffect(() => {
+    if (gameRef.current) {
+      gameRef.current.setScale(scale);
+    }
+  }, [scale]);
+
+  const boardCanvas = (
+    <canvas ref={boardRef} style={{ width: "100%", height: "100%" }} />
+  );
+  const nextPieceCanvas = <canvas ref={nextPieceRef} />;
+  const pieceCountCanvas = <canvas ref={pieceCountRef} />;
 
   const DoubleBorderResponsive = (
     children: ReactNode,
@@ -99,20 +137,9 @@ export default function GameComponent() {
     </DoubleBorder>
   );
 
-  return (
-    <div
-      ref={containerRef}
-      className={styles.gameComponent}
-      style={{ visibility: "hidden" }}
-    >
+  const landscapeUi = (
+    <>
       <div className={styles.leftStats}>
-        {DoubleBorderResponsive(
-          <Box className={styles.level}>
-            <p style={{ marginBottom: "0.5em" }}>Level</p>
-            <p>{level}</p>
-          </Box>,
-          { className: styles.levelContainer }
-        )}
         {DoubleBorderResponsive(
           <Box className={styles.linesCleared}>
             <p style={{ marginBottom: "0.5em" }}>Lines Cleared</p>
@@ -120,15 +147,14 @@ export default function GameComponent() {
           </Box>,
           { className: styles.linesClearedContainer }
         )}
-        {DoubleBorderResponsive(<canvas ref={pieceCountRef} />, {
+        {DoubleBorderResponsive(pieceCountCanvas, {
           className: styles.pieceCount,
         })}
       </div>
 
-      {DoubleBorderResponsive(
-        <canvas ref={boardRef} style={{ width: "100%", height: "100%" }} />,
-        { className: styles.gameBoardContainer }
-      )}
+      {DoubleBorderResponsive(boardCanvas, {
+        className: styles.gameBoardContainer,
+      })}
 
       <div className={styles.rightStats}>
         {DoubleBorderResponsive(
@@ -140,7 +166,7 @@ export default function GameComponent() {
           </Box>,
           { className: styles.scoreContainer }
         )}
-        {DoubleBorderResponsive(<canvas ref={nextPieceRef} />, {
+        {DoubleBorderResponsive(nextPieceCanvas, {
           className: styles.nextPieceContainer,
           innerProps: { className: styles.nextPieceContainerInner },
         })}
@@ -152,6 +178,14 @@ export default function GameComponent() {
           { className: styles.levelContainer }
         )}
       </div>
+    </>
+  );
+
+  const portraitUi = <></>;
+
+  return (
+    <div ref={containerRef} className={styles.gameComponent}>
+      {orientation === "landscape" ? landscapeUi : portraitUi}
     </div>
   );
 }
