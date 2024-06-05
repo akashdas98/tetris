@@ -6,8 +6,8 @@ import Statistics, { StatisticsInterface } from "./Statistics/Statistics";
 
 interface GameInterface {
   boardCanvas: HTMLCanvasElement;
-  startingLevel: number;
-  scale: number;
+  startingLevel?: number;
+  scale?: number;
   nextPieceCanvas?: HTMLCanvasElement;
   pieceCountCanvas?: HTMLCanvasElement;
   onChangeScore?: StatisticsInterface["scoringCb"];

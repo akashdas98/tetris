@@ -63,7 +63,7 @@ export default function GameComponent() {
   };
 
   const updateBorders = () => {
-    const isSmallScreen = window.innerWidth <= 600;
+    const isSmallScreen = window.innerWidth <= 600 || window.innerHeight <= 400;
     setBorderSettings({
       innerBorderThickness: isSmallScreen ? "1px" : "2px",
       outerBorderThickness: isSmallScreen ? "2px" : "4px",
@@ -181,7 +181,52 @@ export default function GameComponent() {
     </>
   );
 
-  const portraitUi = <></>;
+  const portraitUi = (
+    <>
+      <div className={styles.top}>
+        {DoubleBorderResponsive(
+          <>
+            <Box className={styles.score}>
+              <p style={{ marginBottom: "0.5em" }}>Score</p>
+              <p>{score}</p>
+            </Box>
+            <Box className={styles.score}>
+              <p style={{ marginBottom: "0.5em" }}>Highscore</p>
+              <p>{score}</p>
+            </Box>
+          </>,
+          { innerProps: { className: styles.scoreContainer } }
+        )}
+      </div>
+      <div className={styles.main}>
+        {DoubleBorderResponsive(boardCanvas, {
+          className: styles.gameBoardContainer,
+        })}
+        <div className={styles.mainStats}>
+          {DoubleBorderResponsive(nextPieceCanvas, {
+            className: styles.nextPieceContainer,
+            innerProps: { className: styles.nextPieceContainerInner },
+          })}
+          {DoubleBorderResponsive(
+            <Box className={styles.level}>
+              <p style={{ marginBottom: "0.5em" }}>Level</p>
+              <p>{level}</p>
+            </Box>,
+            { className: styles.levelContainer }
+          )}
+        </div>
+      </div>
+      <div className={styles.bottom}>
+        {DoubleBorderResponsive(
+          <Box className={styles.linesCleared}>
+            <p style={{ marginBottom: "0.5em" }}>Lines Cleared</p>
+            <p>{linesCleared}</p>
+          </Box>,
+          { className: styles.linesClearedContainer }
+        )}
+      </div>
+    </>
+  );
 
   return (
     <div ref={containerRef} className={styles.gameComponent}>

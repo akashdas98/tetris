@@ -71,11 +71,13 @@ export default class TetrominoCanvas {
   public updateCanvas = (canvas: HTMLCanvasElement): void => {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.ctx.imageSmoothingEnabled = false;
     this.canvas.height = this.matrix.length * this.scale;
     this.canvas.width = this.matrix[0].length * this.scale;
     this.canvas.style.background = theme.color.background;
     this.canvas.style.display = "block";
     this.canvas.style.padding = `${this.getGap() / 2}px`;
+    this.canvas.style.imageRendering = "pixelated";
   };
 
   public addShapeToMatrix = (
