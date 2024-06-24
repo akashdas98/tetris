@@ -1,3 +1,7 @@
+### This is Tetris, inspired by the classic video game of the same name.
+
+Hosted URL: https://unofficialtetris.netlify.app/
+
 ## Available Scripts
 
 In the project directory, you can run:
